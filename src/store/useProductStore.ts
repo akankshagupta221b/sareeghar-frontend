@@ -12,6 +12,8 @@ export interface Product {
   sizes: string[];
   colors: string[];
   price: number;
+  mrp: number;
+  sellingPrice: number;
   stock: number;
   rating?: number;
   soldCount: number;
@@ -32,6 +34,8 @@ interface ProductState {
   getProductById: (id: string) => Promise<Product | null>;
   fetchProductsForClient: (params: {
     page?: number;
+    mrp?: number;
+    sellingPrice: number;
     limit?: number;
     categories?: string[];
     sizes?: string[];
@@ -95,7 +99,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );

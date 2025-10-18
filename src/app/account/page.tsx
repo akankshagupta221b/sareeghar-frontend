@@ -1,103 +1,201 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Address, useAddressStore } from "@/store/useAddressStore";
+import type { Address } from "@/store/useAddressStore";
+import { useAddressStore } from "@/store/useAddressStore";
 import { useOrderStore } from "@/store/useOrderStore";
+import { useReviewStore } from "@/store/useReviewStore";
 import { useEffect, useState } from "react";
+import { AccountSidebar } from "@/components/user/account/AccountSidebar";
+import { DeliverySection } from "@/components/user/account/DeliverySection";
+import { PaymentSection } from "@/components/user/account/PaymentSection";
+import { AddressListMinimal } from "@/components/user/account/AddressListMinimal";
+import {
+  AddressFormMinimal,
+  type AddressFormData,
+} from "@/components/user/account/AddressFormMinimal";
+import { OrdersTable } from "@/components/user/account/OrdersTable";
+import { MyReviews } from "@/components/user/account/MyReviews";
 
-const initialAddressFormState = {
+const initialAddressFormState: AddressFormData = {
   name: "",
   address: "",
   city: "",
   country: "",
+  state: "",
   postalCode: "",
   phone: "",
   isDefault: false,
 };
 
 function UserAccountPage() {
+  const [activeTab, setActiveTab] = useState("account");
+  const [isEditingDelivery, setIsEditingDelivery] = useState(false);
+  const [isEditingPayment, setIsEditingPayment] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [addressFormData, setAddressFormData] = useState<AddressFormData>(
+    initialAddressFormState
+  );
+  const [reviewsCount, setReviewsCount] = useState(0);
+
+  const [deliveryFormData, setDeliveryFormData] = useState({
+    address: "",
+    country: "",
+    aptSuite: "",
+    zipCode: "",
+    city: "",
+    state: "",
+  });
+
+  const [paymentFormData, setPaymentFormData] = useState({
+    email: "",
+    cardNumber: "",
+    expiryDate: "",
+    cvc: "",
+    cardholderName: "",
+    useShoppingAddress: false,
+    billingCountry: "",
+    billingZipCode: "",
+    billingCity: "",
+    vatNumber: "",
+  });
+
+  const { toast } = useToast();
   const {
-    isLoading: addressesLoading,
     addresses,
-    error: addressesError,
     fetchAddresses,
     createAddress,
     updateAddress,
     deleteAddress,
+    isLoading: addressesLoading,
   } = useAddressStore();
-  const [showAddresses, setShowAddresses] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<string | null>(null);
-  const [formData, setFormData] = useState(initialAddressFormState);
-  const { toast } = useToast();
-  const { userOrders, getOrdersByUserId, isLoading } = useOrderStore();
+  const { userOrders, getOrdersByUserId } = useOrderStore();
+  const { getUserReviews } = useReviewStore();
 
   useEffect(() => {
     fetchAddresses();
     getOrdersByUserId();
+    fetchReviewsCount();
   }, [fetchAddresses, getOrdersByUserId]);
 
-  console.log(userOrders, "userOrders");
+  const fetchReviewsCount = async () => {
+    try {
+      const reviews = await getUserReviews();
+      setReviewsCount(reviews.length);
+    } catch (error) {
+      console.error("Failed to fetch reviews count:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Load default address if available
+    const defaultAddress =
+      addresses.find((addr) => addr.isDefault) || addresses[0];
+    if (defaultAddress) {
+      setDeliveryFormData({
+        address: defaultAddress.address,
+        country: defaultAddress.country,
+        aptSuite: "",
+        zipCode: defaultAddress.postalCode,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+      });
+    }
+  }, [addresses]);
+
+  const handleDeliveryChange = (field: string, value: string) => {
+    setDeliveryFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handlePaymentChange = (field: string, value: string | boolean) => {
+    setPaymentFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleDeliveryEdit = () => {
+    setIsEditingDelivery(!isEditingDelivery);
+  };
+
+  const handleDeliverySave = () => {
+    // Save delivery information
+    toast({
+      title: "Delivery information updated",
+    });
+    setIsEditingDelivery(false);
+  };
+
+  const handlePaymentEdit = () => {
+    setIsEditingPayment(!isEditingPayment);
+  };
+
+  const handleAddressFormChange = (
+    field: keyof AddressFormData,
+    value: string | boolean
+  ) => {
+    setAddressFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleAddressSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
-      if (editingAddress) {
-        const result = await updateAddress(editingAddress, formData);
+      if (editingAddressId) {
+        const result = await updateAddress(editingAddressId, addressFormData);
         if (result) {
+          toast({
+            title: "Address updated successfully",
+          });
           fetchAddresses();
-          setEditingAddress(null);
+          setEditingAddressId(null);
         }
       } else {
-        const result = await createAddress(formData);
+        const result = await createAddress(addressFormData);
         if (result) {
-          fetchAddresses();
           toast({
             title: "Address created successfully",
           });
+          fetchAddresses();
         }
       }
 
-      setShowAddresses(false);
-      setFormData(initialAddressFormState);
+      setShowAddressForm(false);
+      setAddressFormData(initialAddressFormState);
     } catch (err) {
-      console.log(err);
+      toast({
+        title: "Failed to save address",
+        variant: "destructive",
+      });
     }
   };
 
   const handleEditAddress = (address: Address) => {
-    setFormData({
+    setAddressFormData({
       name: address.name,
       address: address.address,
       city: address.city,
       country: address.country,
+      state: address.state,
       phone: address.phone,
       postalCode: address.postalCode,
       isDefault: address.isDefault,
     });
 
-    setEditingAddress(address.id);
-    setShowAddresses(true);
+    setEditingAddressId(address.id);
+    setShowAddressForm(true);
   };
 
   const handleDeleteAddress = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you wanna delete this address?"
+      "Are you sure you want to delete this address?"
     );
 
     if (confirmed) {
@@ -105,285 +203,123 @@ function UserAccountPage() {
         const success = await deleteAddress(id);
         if (success) {
           toast({
-            title: "Address is deleted successfully",
+            title: "Address deleted successfully",
           });
         }
       } catch (e) {
-        console.log(e);
+        toast({
+          title: "Failed to delete address",
+          variant: "destructive",
+        });
       }
     }
   };
 
-  console.log(addresses);
+  const handleAddNewAddress = () => {
+    setEditingAddressId(null);
+    setAddressFormData(initialAddressFormState);
+    setShowAddressForm(true);
+  };
 
-  const getStatusColor = (
-    status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED"
-  ) => {
-    switch (status) {
-      case "PENDING":
-        return "bg-blue-500";
+  const handleCancelAddressForm = () => {
+    setShowAddressForm(false);
+    setEditingAddressId(null);
+    setAddressFormData(initialAddressFormState);
+  };
 
-      case "PROCESSING":
-        return "bg-yellow-500";
-
-      case "SHIPPED":
-        return "bg-purple-500";
-
-      case "DELIVERED":
-        return "bg-green-500";
-
+  const renderContent = () => {
+    switch (activeTab) {
+      case "account":
+        return (
+          <div className="space-y-6 sm:space-y-8">
+            <DeliverySection
+              address={addresses[0] || null}
+              isEditing={isEditingDelivery}
+              onEdit={handleDeliveryEdit}
+              onSave={handleDeliverySave}
+              formData={deliveryFormData}
+              onChange={handleDeliveryChange}
+            />
+            <PaymentSection
+              isEditing={isEditingPayment}
+              onEdit={handlePaymentEdit}
+              formData={paymentFormData}
+              onChange={handlePaymentChange}
+            />
+          </div>
+        );
+      case "addresses":
+        return showAddressForm ? (
+          <AddressFormMinimal
+            formData={addressFormData}
+            isEditing={!!editingAddressId}
+            onSubmit={handleAddressSubmit}
+            onCancel={handleCancelAddressForm}
+            onChange={handleAddressFormChange}
+          />
+        ) : (
+          <AddressListMinimal
+            addresses={addresses}
+            isLoading={addressesLoading}
+            onAddNew={handleAddNewAddress}
+            onEdit={handleEditAddress}
+            onDelete={handleDeleteAddress}
+          />
+        );
+      case "orders":
+        return <OrdersTable orders={userOrders} />;
+      case "reviews":
+        return <MyReviews />;
+      case "wishlist":
+        return (
+          <div className="bg-white">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 tracking-wide">
+              MY WISHLIST
+            </h2>
+            <p className="text-gray-500">Your wishlist is empty.</p>
+          </div>
+        );
+      case "contact":
+        return (
+          <div className="bg-white">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 tracking-wide">
+              CONTACT US
+            </h2>
+            <p className="text-gray-600">Get in touch with our support team.</p>
+          </div>
+        );
+      case "help":
+        return (
+          <div className="bg-white">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 tracking-wide">
+              HELP CENTER
+            </h2>
+            <p className="text-gray-600">Find answers to common questions.</p>
+          </div>
+        );
       default:
-        return "bg-gray-500";
+        return null;
     }
   };
 
-  if (isLoading) return null;
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">MY ACCOUNT</h1>
-        </div>
-        <Tabs defaultValue="orders" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="orders">Order History</TabsTrigger>
-            <TabsTrigger value="addresses">Addresses</TabsTrigger>
-          </TabsList>
-          <TabsContent value="orders">
-            <Card>
-              <CardContent className="p-6">
-                <h2 className="text-xl font-semibold">Order History</h2>
-                {userOrders.length === 0 && (
-                  <h1 className="text-2xl font-bold">
-                    You havn't placed an Order yet.
-                  </h1>
-                )}
+    <div className="min-h-screen bg-white">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12">
+          {/* Sidebar - Left */}
+          <div className="col-span-12 lg:col-span-3">
+            <AccountSidebar
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              ordersCount={userOrders.length}
+              reviewsCount={reviewsCount}
+              wishlistCount={18}
+            />
+          </div>
 
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Order #</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Items</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Total</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {userOrders.map((order) => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-medium">
-                            {order.id}
-                          </TableCell>
-                          <TableCell>
-                            {new Date(order.createdAt).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            {order.items.length}{" "}
-                            {order.items.length > 1 ? "Items" : "Item"}
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              className={`${getStatusColor(order.status)}`}
-                            >
-                              {order.status.charAt(0).toUpperCase() +
-                                order.status.slice(1)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>${order.total.toFixed(2)}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="addresses">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-semibold">Addresses</h2>
-                  <Button
-                    onClick={() => {
-                      setEditingAddress(null);
-                      setFormData(initialAddressFormState);
-                      setShowAddresses(true);
-                    }}
-                  >
-                    Add a New Address
-                  </Button>
-                </div>
-                {addressesLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900" />
-                  </div>
-                ) : showAddresses ? (
-                  <form onSubmit={handleAddressSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Name</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            name: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Address</Label>
-                      <Input
-                        id="address"
-                        value={formData.address}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            address: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your address"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>City</Label>
-                      <Input
-                        id="city"
-                        value={formData.city}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            city: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your city"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Country</Label>
-                      <Input
-                        id="country"
-                        value={formData.country}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            country: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your country"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Postal Code</Label>
-                      <Input
-                        id="postalCode"
-                        value={formData.postalCode}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            postalCode: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your Postal"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Phone</Label>
-                      <Input
-                        id="phone"
-                        value={formData.phone}
-                        required
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            phone: e.target.value,
-                          })
-                        }
-                        placeholder="Enter your phone"
-                      />
-                      <div>
-                        <Checkbox
-                          id="default"
-                          checked={formData.isDefault}
-                          onCheckedChange={(checked) =>
-                            setFormData({
-                              ...formData,
-                              isDefault: checked as boolean,
-                            })
-                          }
-                        />
-                        <Label className="ml-3" htmlFor="default">
-                          Set as default address
-                        </Label>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button type="submit">
-                          {editingAddress ? "Update" : "Add"} Address
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            setShowAddresses(false);
-                            setEditingAddress(null);
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </div>
-                  </form>
-                ) : (
-                  <div className="space-y-4">
-                    {addresses.map((address) => (
-                      <Card key={address.id}>
-                        <CardContent className="p-5">
-                          <div className="flex flex-col mb-5 justify-between items-start">
-                            <p className="font-medium">{address.name}</p>
-                            <p className="mb-2 font-bold">{address.address}</p>
-                            <p className="mb-2">
-                              {address.city}, {address.country},{" "}
-                              {address.postalCode}
-                            </p>
-                            {address.isDefault && (
-                              <Badge variant="secondary">Default</Badge>
-                            )}
-                          </div>
-                          <div className="space-x-2">
-                            <Button
-                              onClick={() => handleEditAddress(address)}
-                              variant={"outline"}
-                              size={"sm"}
-                            >
-                              Edit
-                            </Button>
-                            <Button
-                              onClick={() => handleDeleteAddress(address.id)}
-                              variant={"destructive"}
-                              size={"sm"}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+          {/* Content - Right */}
+          <div className="col-span-12 lg:col-span-9">{renderContent()}</div>
+        </div>
       </div>
     </div>
   );

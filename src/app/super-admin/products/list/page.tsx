@@ -95,7 +95,9 @@ function SuperAdminProductListingPage() {
                     </TableCell>
                     <TableCell>
                       <p className="font-medium">
-                        {product.category.toLocaleUpperCase()}
+                        {product.category != null
+                          ? product.category.toLocaleUpperCase()
+                          : "N/A"}
                       </p>
                     </TableCell>
                     <TableCell>

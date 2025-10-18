@@ -45,7 +45,9 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
       const response = await axios.post(
         `${API_ROUTES.COUPON}/create-coupon`,
         coupon,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
 
       set({ isLoading: false });

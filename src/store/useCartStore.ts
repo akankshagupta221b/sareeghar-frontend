@@ -8,6 +8,8 @@ export interface CartItem {
   productId: string;
   name: string;
   price: number;
+  mrp: number,
+  sellingPrice: number
   image: string;
   color: string;
   size: string;

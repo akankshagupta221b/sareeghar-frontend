@@ -89,3 +89,149 @@ export const protectSignInAction = async (email: string) => {
     success: true,
   };
 };
+
+// Forgot Password Actions
+export const forgotPasswordRequest = async (email: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/request`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to send OTP",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "OTP sent successfully",
+    };
+  } catch (error) {
+    console.error("Forgot password request error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};
+
+export const forgotPasswordVerifyOtp = async (email: string, otp: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/verify-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Invalid OTP",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "OTP verified successfully",
+    };
+  } catch (error) {
+    console.error("Verify OTP error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};
+
+export const forgotPasswordReset = async (
+  email: string,
+  otp: string,
+  password: string,
+  confirmPassword: string
+) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/reset`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp, password, confirmPassword }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to reset password",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "Password reset successfully",
+    };
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};
+
+export const forgotPasswordResendOtp = async (email: string) => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/resend-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to resend OTP",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "OTP resent successfully",
+    };
+  } catch (error) {
+    console.error("Resend OTP error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};

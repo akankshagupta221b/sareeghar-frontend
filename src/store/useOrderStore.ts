@@ -119,7 +119,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       const response = await axios.post(
         `${API_ROUTES.ORDER}/capture-paypal-order`,
         { orderId },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false, isPaymentProcessing: false });
       return response.data;
@@ -151,7 +153,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       const response = await axios.post(
         `${API_ROUTES.ORDER}/create-razorpay-order`,
         { amount, currency },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false });
       return response.data.order;
@@ -166,7 +170,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       const response = await axios.post(
         `${API_ROUTES.ORDER}/verify-razorpay-payment`,
         paymentData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false, isPaymentProcessing: false });
       return response.data;
@@ -185,7 +191,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       const response = await axios.post(
         `${API_ROUTES.ORDER}/create-final-order`,
         orderData,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({
         isLoading: false,
@@ -208,7 +216,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
       await axios.put(
         `${API_ROUTES.ORDER}/${orderId}/status`,
         { status },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set((state) => ({
         currentOrder:
@@ -239,7 +249,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     try {
       const response = await axios.get(
         `${API_ROUTES.ORDER}/get-all-orders-for-admin`,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false, adminOrders: response.data });
       return response.data;
@@ -253,7 +265,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     try {
       const response = await axios.get(
         `${API_ROUTES.ORDER}/get-order-by-user-id`,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false, userOrders: response.data });
       return response.data;
@@ -268,7 +282,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
     try {
       const response = await axios.get(
         `${API_ROUTES.ORDER}/get-single-order/${orderId}`,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+        }
       );
       set({ isLoading: false, currentOrder: response.data });
       return response.data;

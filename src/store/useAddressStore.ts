@@ -7,6 +7,7 @@ export interface Address {
   name: string;
   address: string;
   city: string;
+  state: string;
   country: string;
   postalCode: string;
   phone: string;
@@ -50,7 +51,8 @@ export const useAddressStore = create<AddressStore>((set, get) => ({
         address,
         {
           withCredentials: true,
-        }
+        },
+        
       );
 
       const newAddress = response.data.address;

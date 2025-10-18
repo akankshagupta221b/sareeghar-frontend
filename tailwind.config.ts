@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "475px",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -57,9 +60,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        archivo: ["var(--font-archivo)", "sans-serif"],
-        primary: ["var(--font-archivo)", "sans-serif"],
-        secondary: ["var(--font-archivo)", "sans-serif"],
+        // inter: ["var(--font-inter)", "sans-serif"],
+        alegreya: ["var(--font-alegreya)", "serif"],
+        playfair: ["var(--font-playfair-display)", "serif"],
+        primary: ["var(--font-alegreya)", "sans-serif"],
+        secondary: ["var(--font-playfair-display)", "serif"],
       },
     },
   },

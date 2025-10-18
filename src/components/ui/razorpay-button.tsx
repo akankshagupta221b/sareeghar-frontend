@@ -159,20 +159,16 @@ export function RazorpayButton({
     <div className="space-y-3">
       {/* Test Mode Warning */}
       {razorpayKey?.startsWith("rzp_test") && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-2 rounded text-sm">
+        <div className="bg-secondary border border-secondary text-secondary-foreground px-3 py-2 rounded text-sm">
           <strong>🧪 Test Mode:</strong> Use test cards for payment. No real
           money will be charged.
-          <div className="mt-2 text-xs">
-            <strong>Test Card:</strong> 4111 1111 1111 1111 | CVV: Any 3 digits
-            | Expiry: Any future date
-          </div>
         </div>
       )}
 
       <Button
         onClick={handlePayment}
         disabled={disabled || isLoading || !scriptLoaded || !razorpayKey}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+        className="w-full bg-primary hover:bg-primary/90 text-white"
       >
         {isLoading
           ? "Processing..."

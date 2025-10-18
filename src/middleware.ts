@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const publicRoutes = ["/auth/register", "/auth/login"];
+const publicRoutes = ["/auth/register", "/auth/login", "/auth/forgot-password"];
 const superAdminRoutes = ["/super-admin", "/super-admim/:path*"];
 const userRoutes = ["/home"];
 
@@ -20,12 +20,7 @@ export async function middleware(request: NextRequest) {
       };
 
       if (publicRoutes.includes(pathname)) {
-        return NextResponse.redirect(
-          new URL(
-            role === "SUPER_ADMIN" ? "/super-admin" : "/home",
-            request.url
-          )
-        );
+        return NextResponse.redirect(new URL("/", request.url));
       }
 
       if (
