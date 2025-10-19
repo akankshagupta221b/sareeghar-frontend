@@ -154,13 +154,14 @@ function UserCartPage() {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
-                    />
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="rounded-md object-cover"
+                      />
+                    </div>
                     <div>
                       <p className="text-[11px] xs:text-xs text-gray-500 mb-1">
                         Saree

@@ -41,11 +41,12 @@ const navItems = [
 ];
 
 function Header() {
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const router = useRouter();
   const [mobileView, setMobileView] = useState<"menu" | "account">("menu");
   const [showSheetDialog, setShowSheetDialog] = useState(false);
   const { fetchCart, items } = useCartStore();
+  const isAuthenticated = !!user;
 
   useEffect(() => {
     fetchCart();
@@ -74,28 +75,54 @@ function Header() {
                 Account
               </h3>
             </div>
-            <nav className="space-y-3">
-              <button
-                onClick={() => {
-                  setShowSheetDialog(false);
-                  router.push("/account");
-                }}
-                className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200"
-              >
-                <User className="mr-3 h-5 w-5 text-gray-600" />
-                <span className="text-gray-800 font-medium">Your Account</span>
-              </button>
-              <button
-                onClick={() => {
-                  setShowSheetDialog(false);
-                  setMobileView("menu");
-                  handleLogout();
-                }}
-                className="flex items-center w-full p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600"
-              >
-                <span className="font-medium">Logout</span>
-              </button>
-            </nav>
+            {isAuthenticated ? (
+              <nav className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowSheetDialog(false);
+                    router.push("/account");
+                  }}
+                  className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                >
+                  <User className="mr-3 h-5 w-5 text-gray-600" />
+                  <span className="text-gray-800 font-medium">
+                    Your Account
+                  </span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowSheetDialog(false);
+                    setMobileView("menu");
+                    handleLogout();
+                  }}
+                  className="flex items-center w-full p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600"
+                >
+                  <span className="font-medium">Logout</span>
+                </button>
+              </nav>
+            ) : (
+              <nav className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowSheetDialog(false);
+                    router.push("/auth/login");
+                  }}
+                  className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                >
+                  <User className="mr-3 h-5 w-5 text-gray-600" />
+                  <span className="text-gray-800 font-medium">Login</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowSheetDialog(false);
+                    router.push("/auth/register");
+                  }}
+                  className="flex items-center w-full p-3 text-left hover:bg-blue-50 rounded-lg transition-colors duration-200 text-blue-600"
+                >
+                  <span className="font-medium">Create Account</span>
+                </button>
+              </nav>
+            )}
           </div>
         );
 
@@ -207,32 +234,50 @@ function Header() {
             </div>
 
             {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="hover:bg-gray-100 hover:scale-105 transition-all duration-200"
+                  >
+                    <User className="h-5 w-5 text-gray-600" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 mt-2">
+                  <DropdownMenuItem
+                    onClick={() => router.push("/account")}
+                    className="cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Your Account
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer hover:bg-red-50 text-red-600 transition-colors duration-200"
+                  >
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-2">
                 <Button
-                  size="icon"
                   variant="ghost"
-                  className="hover:bg-gray-100 hover:scale-105 transition-all duration-200"
+                  onClick={() => router.push("/auth/login")}
+                  className="hover:bg-gray-100 transition-all duration-200 font-semibold"
                 >
-                  <User className="h-5 w-5 text-gray-600" />
+                  Login
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 mt-2">
-                <DropdownMenuItem
-                  onClick={() => router.push("/account")}
-                  className="cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+                <Button
+                  onClick={() => router.push("/auth/register")}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold transition-all duration-200"
                 >
-                  <User className="mr-2 h-4 w-4" />
-                  Your Account
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleLogout}
-                  className="cursor-pointer hover:bg-red-50 text-red-600 transition-colors duration-200"
-                >
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  Sign Up
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu */}

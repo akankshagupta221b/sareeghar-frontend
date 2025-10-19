@@ -3,22 +3,26 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
+import { useCartStore } from "@/store/useCartStore";
+import { useRouter, useSearchParams } from "next/navigation";
 import { protectSignInAction } from "@/actions/auth";
 import { X, Mail, Lock, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-function LoginPage() {
+function LoginForm() {
   const [formData, setFormData] = useState({
     email: "admin@gmail.com",
     password: "123456",
   });
   const { toast } = useToast();
   const { login, isLoading } = useAuthStore();
+  const { syncGuestCartWithServer } = useCartStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/";
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -43,16 +47,18 @@ function LoginPage() {
     }
 
     const success = await login(formData.email, formData.password);
-    if (success.success) {
+    if (success.success && success.data) {
       const { accessToken, refreshToken } = success.data;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
+      // Sync guest cart with server
+      await syncGuestCartWithServer();
+
       toast({
-        title: "Login Successfull!",
+        title: "Login Successful!",
       });
-      const user = useAuthStore.getState().user;
-      if (user?.role === "SUPER_ADMIN") router.push("/");
-      else router.push("/home");
+      router.push(redirectPath);
     }
   };
 
@@ -239,6 +245,20 @@ function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          Loading...
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
 

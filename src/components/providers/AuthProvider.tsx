@@ -11,11 +11,23 @@ export default function AuthProvider({
   const { refreshAccessToken } = useAuthStore();
 
   useEffect(() => {
+    // Only validate session if tokens exist
+    const hasTokens =
+      typeof window !== "undefined" &&
+      (localStorage.getItem("accessToken") ||
+        localStorage.getItem("refreshToken"));
+
+    if (!hasTokens) {
+      // No tokens, skip validation - user is browsing as guest
+      return;
+    }
+
     // Try to refresh token on mount to validate existing session
     const validateSession = async () => {
       try {
         await refreshAccessToken();
       } catch (error) {
+        // Silent fail - user can continue browsing as guest
         console.error("Session validation failed:", error);
       }
     };
@@ -23,8 +35,16 @@ export default function AuthProvider({
     validateSession();
 
     // Set up periodic token refresh (every 14 minutes for 15min token)
+    // Only if user has tokens
     const refreshInterval = setInterval(() => {
-      refreshAccessToken().catch(console.error);
+      const stillHasTokens =
+        typeof window !== "undefined" &&
+        (localStorage.getItem("accessToken") ||
+          localStorage.getItem("refreshToken"));
+
+      if (stillHasTokens) {
+        refreshAccessToken().catch(console.error);
+      }
     }, 14 * 60 * 1000); // 14 minutes
 
     return () => clearInterval(refreshInterval);
