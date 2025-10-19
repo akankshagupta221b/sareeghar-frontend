@@ -3,6 +3,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import ProductCard from "@/components/common/ProductCard";
+import Link from "next/link";
 
 // Configuration - Easy to modify
 const collectionConfig = {
@@ -156,13 +157,13 @@ export default function DressCollection({
               )}
             </div>
 
-            <a
+            <Link
               href="/listing"
               className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-full text-sm font-semibold transition-colors group whitespace-nowrap"
             >
               {collectionConfig.shopNowText}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </div>
 
           {/* Product Count */}
@@ -208,13 +209,13 @@ export default function DressCollection({
         {collectionConfig.maxProducts &&
           collection.products.length > collectionConfig.maxProducts && (
             <div className="text-center">
-              <a
+              <Link
                 href={`/listing?collection=${collection.id}`}
                 className="inline-flex items-center gap-2 px-8 py-3 border-2 border-gray-300 hover:border-primary hover:text-primary rounded-full text-sm font-semibold transition-colors group"
               >
                 {collectionConfig.viewAllText}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </div>
           )}
       </div>

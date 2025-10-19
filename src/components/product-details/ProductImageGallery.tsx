@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 interface ProductImageGalleryProps {
@@ -36,10 +37,12 @@ export default function ProductImageGallery({
               currentImage === index ? "border-black" : "border-gray-200"
             }`}
           >
-            <img
+            <Image
               src={img}
               alt={`${productName} ${index + 1}`}
               className="w-full h-full object-cover"
+              width={400}
+              height={300}
             />
           </button>
         ))}
@@ -47,10 +50,12 @@ export default function ProductImageGallery({
 
       {/* Main Image */}
       <div className="flex-1 relative bg-gray-100 rounded-md overflow-hidden aspect-[3/4]">
-        <img
+        <Image
           src={images[currentImage]}
           alt={productName}
           className="absolute inset-0 w-full h-full object-cover"
+          width={400}
+          height={300}
         />
 
         {/* Navigation Arrows */}
@@ -107,10 +112,12 @@ export default function ProductImageGallery({
               currentImage === index ? "border-black" : "border-gray-200"
             }`}
           >
-            <img
+            <Image
               src={img}
               alt={`${productName} ${index + 1}`}
               className="w-full h-full object-cover"
+              width={400}
+              height={300}
             />
           </button>
         ))}

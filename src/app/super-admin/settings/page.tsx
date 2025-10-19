@@ -9,6 +9,7 @@ import { useProductStore } from "@/store/useProductStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { ImageIcon, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 function SuperAdminCouponsPage() {
   const [uploadedFiles, setuploadedFiles] = useState<File[]>([]);
@@ -35,8 +36,6 @@ function SuperAdminCouponsPage() {
       pageLoadRef.current = true;
     }
   }, [fetchAllProductsForAdmin, fetchFeaturedProducts, fetchBanners]);
-
-  console.log(products, "products");
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -124,7 +123,7 @@ function SuperAdminCouponsPage() {
             <div className="grid grid-cols-4 gap-4">
               {uploadedFiles.map((file, index) => (
                 <div key={index} className="relative group">
-                  <img
+                  <Image
                     src={URL.createObjectURL(file)}
                     alt={`Uploaded image ${index + 1}`}
                     className="w-full h-32 object-cover rounded-md"
@@ -144,7 +143,7 @@ function SuperAdminCouponsPage() {
           <div className="grid grid-cols-4 gap-4">
             {banners.map((banner, index) => (
               <div key={banner.id} className="relative group">
-                <img
+                <Image
                   src={banner.imageUrl}
                   alt={`Banner ${index + 1}`}
                   className="w-full h-32 object-cover rounded-md"
@@ -175,7 +174,7 @@ function SuperAdminCouponsPage() {
                   <div className="space-y-2">
                     <div className="w-full h-32 bg-gray-100 rounded-md flex items-center justify-center">
                       {product.images && product.images.length > 0 ? (
-                        <img
+                        <Image
                           src={product.images[0]}
                           alt={product.name}
                           className="w-full h-full object-cover rounded-md"

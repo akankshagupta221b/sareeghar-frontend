@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 export default function BrandAutoScroll() {
@@ -57,10 +58,12 @@ export default function BrandAutoScroll() {
               key={`${brand.name}-${index}`}
               className="flex-shrink-0 px-8 md:px-12 lg:px-16 flex items-center justify-center"
             >
-              <img
+              <Image
                 src={brand.logo}
                 alt={brand.name}
                 className="h-8 md:h-10 lg:h-12 w-auto object-contain  hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100"
+                width={100}
+                height={100}
               />
             </div>
           ))}

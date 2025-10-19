@@ -153,7 +153,6 @@ function CheckoutContent() {
   function handleApplyCoupon() {
     fetchCoupons();
     const getCurrentCoupon = couponList.find((c) => c.code === couponCode);
-    console.log("getCurrentCoupon", couponList, getCurrentCoupon);
     if (!getCurrentCoupon) {
       setCouponAppliedError("Invalied Coupon code");
       setAppliedCoupon(null);
@@ -533,10 +532,12 @@ function CheckoutContent() {
           {cartItemsWithDetails.map((item) => (
             <div key={item.id} className="flex gap-3">
               <div className="relative w-16 h-20 rounded overflow-hidden flex-shrink-0 bg-gray-800">
-                <img
+                <Image
                   src={item?.product?.images[0]}
                   alt={item?.product?.name}
-                  className="w-full h-full object-cover"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md"
                 />
               </div>
               <div className="flex-1 min-w-0">

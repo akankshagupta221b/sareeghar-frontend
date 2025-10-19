@@ -7,6 +7,7 @@ import {
   HelpCircle,
   Lock,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState([
@@ -107,10 +108,12 @@ export default function ShoppingCart() {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <img
+                    <Image
                       src={item.image}
                       alt={item.brand}
                       className="w-20 h-24 object-cover"
+                      width={80}
+                      height={96}
                     />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">

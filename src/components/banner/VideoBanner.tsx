@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Play, Pause, ArrowRight, Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export default function VideoBanner() {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -73,20 +74,20 @@ export default function VideoBanner() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
+            <Link
               href="/listing"
               className="inline-flex items-center gap-3 px-10 py-5 bg-white text-black font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-2xl group"
             >
               SHOP SAREES
               <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="/listing"
               className="inline-flex items-center gap-3 px-10 py-5 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-black transition-all duration-300 hover:scale-105 backdrop-blur-sm group"
             >
               VIEW COLLECTIONS
               <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-            </a>
+            </Link>
           </div>
 
           {/* Feature Tags */}

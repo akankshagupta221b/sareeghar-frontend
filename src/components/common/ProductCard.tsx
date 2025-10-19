@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
@@ -32,10 +33,12 @@ export default function ProductCard({
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-2 sm:mb-3 md:mb-4 rounded-md">
-        <img
+        <Image
           src={image}
           alt={name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          width={400}
+          height={300}
         />
       </div>
 

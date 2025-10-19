@@ -38,8 +38,6 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
         withCredentials: true,
       });
 
-      console.log("Fetched Categories:", response.data);
-
       set({ categories: response.data.data.categories, isLoading: false });
     } catch (e) {
       set({ isLoading: false, error: "Failed to fetch categories" });

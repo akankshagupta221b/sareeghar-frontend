@@ -74,8 +74,6 @@ function SuperAdminManageProductPage() {
   }, [isEditMode, getCurrentEditedProductId, getProductById]);
 
   useEffect(() => {
-    console.log(getCurrentEditedProductId, "getCurrentEditedProductId");
-
     if (getCurrentEditedProductId === null) {
       setFormState({
         name: "",
@@ -154,7 +152,6 @@ function SuperAdminManageProductPage() {
     const result = isEditMode
       ? await updateProduct(getCurrentEditedProductId, formData)
       : await createProduct(formData);
-    console.log(result, "result");
     if (result) {
       router.push("/super-admin/products/list");
     }

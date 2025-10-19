@@ -97,28 +97,11 @@ function ProductListingPage() {
     });
   };
 
-  useEffect(() => {
-    fetchAllProducts();
-    fetchBrands();
-    fetchCategories();
-  }, [
-    currentPage,
-    selectedCategories,
-    selectedSizes,
-    selectedBrands,
-    selectedColors,
-    priceRange,
-    sortBy,
-    sortOrder,
-  ]);
-
   const handleSortChange = (value: string) => {
     const [newSortBy, newSortOrder] = value.split("-");
     setSortBy(newSortBy);
     setSortOrder(newSortOrder as "asc" | "desc");
   };
-
-  console.log("All Products: ", products);
 
   const handleToggleFilter = (
     filterType: "categories" | "sizes" | "brands" | "colors",
@@ -142,6 +125,21 @@ function ProductListingPage() {
     setCurrentPage(newPage);
   };
 
+  useEffect(() => {
+    fetchAllProducts();
+    fetchBrands();
+    fetchCategories();
+  }, [
+    currentPage,
+    selectedCategories,
+    selectedSizes,
+    selectedBrands,
+    selectedColors,
+    priceRange,
+    sortBy,
+    sortOrder,
+  ]);
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
@@ -154,8 +152,8 @@ function ProductListingPage() {
             {/* Mobile Filter Dialog */}
             <Dialog>
               <DialogTrigger asChild>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="lg:hidden flex-1 sm:flex-none"
                   size="sm"
                 >

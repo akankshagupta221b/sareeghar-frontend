@@ -65,8 +65,6 @@ export const useAuthStore = create<AuthStore>()(
             password,
           });
 
-          console.log("Auth Login Response:", response.data);
-
           set({ isLoading: false, user: response.data.user });
           return true;
         } catch (error) {

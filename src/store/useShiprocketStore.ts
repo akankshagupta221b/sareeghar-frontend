@@ -113,8 +113,6 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
         }
       );
 
-      console.log("Best courier response:", response.data);
-
       if (!response.data.success) {
         set({
           error: response.data.error || "Failed to get best courier",

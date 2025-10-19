@@ -5,7 +5,7 @@ import ProductDetailsSkeleton from "./productSkeleton";
 import ProductDetailsContent from "./productDetails";
 import { useParams } from "next/navigation";
 
-async function ProductDetailsPage() {
+function ProductDetailsPage() {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id || "";
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 export const HomePageBanner = ({ banners }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -26,10 +27,12 @@ export const HomePageBanner = ({ banners }) => {
           >
             {/* Background Image with Parallax Effect */}
             <div className="absolute inset-0">
-              <img
+              <Image
                 src={bannerItem.imageUrl}
                 alt={`Banner ${index + 1}`}
                 className="w-full h-full object-cover object-center"
+                layout="fill"
+                objectFit="cover"
               />
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />

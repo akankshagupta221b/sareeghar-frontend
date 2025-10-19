@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useBrandStore } from "@/store/useBrandStore";
 import { useCollectionsStore } from "@/store/useCollectionsStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import Image from "next/image";
 import { useEffect } from "react";
 
 function HomePage() {
@@ -69,10 +70,12 @@ function HomePage() {
               >
                 {/* Product Image */}
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                  <img
+                  <Image
                     src={productItem.images[0]}
                     alt={productItem.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    width={300}
+                    height={400}
                   />
 
                   {/* New Badge */}
@@ -192,7 +195,7 @@ function HomePage() {
                 >
                   {/* Brand Logo Container */}
                   <div className="h-96 flex items-center justify-center bg-gradient-to-br from-white to-gray-50 group-hover:from-gray-50 group-hover:to-white transition-all duration-500">
-                    <img
+                    <Image
                       src={brand.logo}
                       alt={brand.name}
                       className="max-w-full max-h-full object-fill transition-all duration-500 group-hover:scale-110"

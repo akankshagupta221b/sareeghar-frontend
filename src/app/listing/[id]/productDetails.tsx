@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
 import ProductDetailsSkeleton from "./productSkeleton";
+import Link from "next/link";
 
 function ProductDetailsContent({ id }: { id: string }) {
   const [product, setProduct] = useState<any>(null);
@@ -102,13 +103,13 @@ function ProductDetailsContent({ id }: { id: string }) {
       {/* Breadcrumb */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
-          <a href="/" className="font-semibold hover:underline">
+          <Link href="/" className="font-semibold hover:underline">
             MAIN
-          </a>
+          </Link>
           <span className="text-gray-400">/</span>
-          <a href="/listing" className="font-semibold hover:underline">
+          <Link href="/listing" className="font-semibold hover:underline">
             PRODUCTS
-          </a>
+          </Link>
           <span className="text-gray-400">/</span>
           <span className="text-gray-400 uppercase line-clamp-1">
             {product.name}
@@ -136,7 +137,6 @@ function ProductDetailsContent({ id }: { id: string }) {
               sellingPrice={product.sellingPrice}
               onFavoriteToggle={(isFavorite) => {
                 console.log("Favorite toggled:", isFavorite);
-                // You can add logic to save to favorites here
               }}
             />
 

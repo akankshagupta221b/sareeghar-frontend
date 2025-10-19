@@ -20,6 +20,7 @@ import {
   forgotPasswordReset,
   forgotPasswordResendOtp,
 } from "@/actions/auth";
+import Image from "next/image";
 
 type Step = "request" | "verify" | "reset" | "success";
 
@@ -490,10 +491,12 @@ function ForgotPasswordPage() {
             <div className="absolute inset-0 bg-black/20"></div>
 
             {/* Image */}
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070"
               alt="Secure Account"
               className="w-full h-full object-cover opacity-90"
+              layout="fill"
+              objectFit="cover"
             />
 
             {/* Overlay Content */}

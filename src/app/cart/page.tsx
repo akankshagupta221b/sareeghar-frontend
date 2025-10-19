@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 function UserCartPage() {
   const {
@@ -28,8 +29,6 @@ function UserCartPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const router = useRouter();
-
-  console.log("user: ", user);
 
   useEffect(() => {
     fetchCart();
@@ -155,13 +154,17 @@ function UserCartPage() {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <img
+                    <Image
                       src={item.image}
                       alt={item.name}
-                      className="w-16 h-20 sm:w-20 sm:h-24 object-cover rounded-md"
+                      layout="fill"
+                      objectFit="cover"
+                      className="rounded-md"
                     />
                     <div>
-                      <p className="text-[11px] xs:text-xs text-gray-500 mb-1">Saree</p>
+                      <p className="text-[11px] xs:text-xs text-gray-500 mb-1">
+                        Saree
+                      </p>
                       <h3 className="text-sm sm:text-base font-semibold mb-2 line-clamp-2">
                         {item.name}
                       </h3>
@@ -175,7 +178,9 @@ function UserCartPage() {
 
                   {/* Size */}
                   <div className="md:text-center">
-                    <div className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide mb-1">Size</div>
+                    <div className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide mb-1">
+                      Size
+                    </div>
                     <div className="flex items-center md:justify-center gap-1 px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded text-xs sm:text-sm font-medium">
                       {item.size}
                     </div>
@@ -183,7 +188,9 @@ function UserCartPage() {
 
                   {/* Quantity */}
                   <div className="flex md:flex-row flex-col md:items-center items-start md:justify-center gap-2 md:gap-3">
-                    <div className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide">Quantity</div>
+                    <div className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide">
+                      Quantity
+                    </div>
                     <div className="flex items-center gap-2 md:gap-3">
                       <button
                         onClick={() =>
@@ -214,13 +221,18 @@ function UserCartPage() {
 
                   {/* Price */}
                   <div className="md:text-right flex md:block items-center justify-between w-full">
-                    <span className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide">Price</span>
+                    <span className="md:hidden text-[10px] xs:text-xs text-gray-500 uppercase tracking-wide">
+                      Price
+                    </span>
                     <div>
                       <span className="text-base sm:text-lg font-bold">
                         {/* {(parseFloat(item.sellingPrice) * item.quantity).toFixed(2)} */}
                         {item.sellingPrice}
                       </span>
-                      <span className="text-xs sm:text-sm text-gray-500"> ₹</span>
+                      <span className="text-xs sm:text-sm text-gray-500">
+                        {" "}
+                        ₹
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -248,7 +260,9 @@ function UserCartPage() {
                   TOTAL
                 </span>
                 <div className="text-right">
-                  <span className="text-2xl sm:text-3xl font-bold">{total.toFixed(2)}</span>
+                  <span className="text-2xl sm:text-3xl font-bold">
+                    {total.toFixed(2)}
+                  </span>
                   <span className="text-base sm:text-lg text-gray-500"> ₹</span>
                 </div>
               </div>

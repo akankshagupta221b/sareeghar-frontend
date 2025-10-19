@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import { ArrowRight, User, Mail, Lock, X, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 
 function Registerpage() {
   const [formData, setFormData] = useState({
@@ -72,10 +73,12 @@ function Registerpage() {
             <div className="absolute inset-0 bg-black/20"></div>
 
             {/* Image */}
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070"
               alt="Fashion Shopping"
-              className="w-full h-full object-cover opacity-90"
+              layout="fill"
+              objectFit="cover"
+              className="opacity-90"
             />
 
             {/* Overlay Content */}

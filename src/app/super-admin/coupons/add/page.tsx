@@ -46,8 +46,6 @@ function SuperAdminManageCouponsPage() {
   const handleCouponSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (new Date(formData.endDate) <= new Date(formData.startDate)) {
-      console.log("logging");
-
       toast({
         title: "End date must be after start date",
         variant: "destructive",

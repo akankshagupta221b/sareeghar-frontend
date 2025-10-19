@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { Gift, Instagram, Facebook, Twitter } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import Image from "next/image";
+import Link from "next/link";
 
 // Footer menu items configuration
 const footerMenus = [
@@ -72,10 +74,12 @@ export default function Footer2() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             {/* Left - Image */}
             <div className="relative h-44 md:h-48 overflow-hidden">
-              <img
+              <Image
                 src="/images/footer-image.jpg"
                 alt="Shopping"
                 className="w-full h-full object-cover"
+                width={400}
+                height={300}
               />
             </div>
 
@@ -115,10 +119,12 @@ export default function Footer2() {
           <div className="space-y-4">
             {/* Logo + Brand Name */}
             <div className="flex items-center space-x-3">
-              <img
+              <Image
                 src="/logo/saree-ghar.jpg" // Replace with your actual logo path
                 alt="Saree Ghar Logo"
                 className="w-24 h-32 object-contain"
+                width={400}
+                height={300}
               />
               <h3 className="text-3xl font-bold font-secondary">
                 {storeSettings?.name != null
@@ -164,14 +170,14 @@ export default function Footer2() {
               {socialLinks.map((social, index) => {
                 const { Icon } = social;
                 return (
-                  <a
+                  <Link
                     key={index}
-                    href={social.href}
+                    href={social.href || "#"}
                     className="hover:opacity-70 transition-opacity"
                     aria-label={social.label}
                   >
                     <Icon className="w-5 h-5" />
-                  </a>
+                  </Link>
                 );
               })}
             </div>
@@ -185,9 +191,9 @@ export default function Footer2() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm text-gray-500">
             <div className="flex flex-wrap items-center gap-4">
               {bottomLinks.map((link, index) => (
-                <a key={index} href={link.href} className="hover:underline">
+                <Link key={index} href={link.href} className="hover:underline">
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 

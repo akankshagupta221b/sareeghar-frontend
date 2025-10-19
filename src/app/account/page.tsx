@@ -73,12 +73,6 @@ function UserAccountPage() {
   const { userOrders, getOrdersByUserId } = useOrderStore();
   const { getUserReviews } = useReviewStore();
 
-  useEffect(() => {
-    fetchAddresses();
-    getOrdersByUserId();
-    fetchReviewsCount();
-  }, [fetchAddresses, getOrdersByUserId]);
-
   const fetchReviewsCount = async () => {
     try {
       const reviews = await getUserReviews();
@@ -87,22 +81,6 @@ function UserAccountPage() {
       console.error("Failed to fetch reviews count:", error);
     }
   };
-
-  useEffect(() => {
-    // Load default address if available
-    const defaultAddress =
-      addresses.find((addr) => addr.isDefault) || addresses[0];
-    if (defaultAddress) {
-      setDeliveryFormData({
-        address: defaultAddress.address,
-        country: defaultAddress.country,
-        aptSuite: "",
-        zipCode: defaultAddress.postalCode,
-        city: defaultAddress.city,
-        state: defaultAddress.state,
-      });
-    }
-  }, [addresses]);
 
   const handleDeliveryChange = (field: string, value: string) => {
     setDeliveryFormData((prev) => ({
@@ -226,6 +204,28 @@ function UserAccountPage() {
     setEditingAddressId(null);
     setAddressFormData(initialAddressFormState);
   };
+
+  useEffect(() => {
+    fetchAddresses();
+    getOrdersByUserId();
+    fetchReviewsCount();
+  }, [fetchAddresses, getOrdersByUserId]);
+
+  useEffect(() => {
+    // Load default address if available
+    const defaultAddress =
+      addresses.find((addr) => addr.isDefault) || addresses[0];
+    if (defaultAddress) {
+      setDeliveryFormData({
+        address: defaultAddress.address,
+        country: defaultAddress.country,
+        aptSuite: "",
+        zipCode: defaultAddress.postalCode,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+      });
+    }
+  }, [addresses]);
 
   const renderContent = () => {
     switch (activeTab) {

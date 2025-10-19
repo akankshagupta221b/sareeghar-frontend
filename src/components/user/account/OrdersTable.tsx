@@ -27,6 +27,7 @@ import {
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { useReviewStore } from "@/store/useReviewStore";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 interface OrderItem {
   id: string;
@@ -376,10 +377,12 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                         className="flex items-center gap-4 p-3 border border-gray-200 rounded-lg"
                       >
                         {item.product?.image && (
-                          <img
+                          <Image
                             src={item.product.image}
                             alt={item.product.name}
                             className="w-16 h-16 object-cover rounded"
+                            width={64}
+                            height={64}
                           />
                         )}
                         <div className="flex-1">

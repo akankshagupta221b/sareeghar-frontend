@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const gridItems = [
@@ -49,8 +50,6 @@ function HomePage() {
     return () => clearInterval(bannerTimer);
   }, [banners.length]);
 
-  console.log(banners, featuredProducts);
-
   return (
     <div className="min-h-screen bg-white">
       <section className="relative h-[600px] overflow-hidden">
@@ -62,10 +61,12 @@ function HomePage() {
             key={bannerItem.id}
           >
             <div className="absolute inset-0">
-              <img
+              <Image
                 src={bannerItem.imageUrl}
                 alt={`Banner ${index + 1}`}
-                className="w-full h-full object-cover"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-md"
               />
               <div className="absolute inset-0 bg-black bg-opacity-20" />
             </div>
@@ -119,10 +120,12 @@ function HomePage() {
             {gridItems.map((gridItem, index) => (
               <div key={index} className="relative group overflow-hidden">
                 <div className="aspect-[3/4]">
-                  <img
+                  <Image
                     src={gridItem.image}
                     alt={gridItem.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -155,10 +158,12 @@ function HomePage() {
             {featuredProducts.map((productItem, index) => (
               <div key={index} className="relative group overflow-hidden">
                 <div className="aspect-[3/4]">
-                  <img
+                  <Image
                     src={productItem.images[0]}
                     alt={productItem.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-md transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
                 <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

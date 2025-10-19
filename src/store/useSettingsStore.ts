@@ -230,7 +230,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
           },
         }
       );
-      console.log(" Banners Added:", response.data);
       set({ isLoading: false });
       return response.data.success;
     } catch (e) {
@@ -271,7 +270,6 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axios.get(`${API_ROUTES.STORE}/settings`);
-      console.log("Store Settings:", response.data.data);
       set({ storeSettings: response.data.data, isLoading: false });
     } catch (e) {
       console.error("Failed to fetch store settings:", e);
