@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { protectSignInAction } from "@/actions/auth";
 import { X, Mail, Lock, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 function LoginForm() {
   const [formData, setFormData] = useState({
@@ -48,17 +49,44 @@ function LoginForm() {
 
     const success = await login(formData.email, formData.password);
     if (success.success && success.data) {
-      const { accessToken, refreshToken } = success.data;
+      const { accessToken, refreshToken, user } = success.data;
+
+      // Store tokens in localStorage
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+
+      // Set cookies using js-cookie
+      Cookies.set("accessToken", accessToken, {
+        expires: 1, // 1 day
+        secure: true,
+        sameSite: "none",
+      });
+
+      Cookies.set("refreshToken", refreshToken, {
+        expires: 30, // 30 days
+        secure: true,
+        sameSite: "none",
+      });
+
+      console.log("✅ Cookies set successfully:", {
+        accessToken: Cookies.get("accessToken")?.substring(0, 20) + "...",
+        refreshToken: Cookies.get("refreshToken")?.substring(0, 20) + "...",
+      });
 
       // Sync guest cart with server
       await syncGuestCartWithServer();
 
       toast({
         title: "Login Successful!",
+        description: `Welcome back, ${user?.name || "User"}!`,
       });
       router.push(redirectPath);
+    } else {
+      toast({
+        title: "Login Failed",
+        description: "Invalid email or password",
+        variant: "destructive",
+      });
     }
   };
 

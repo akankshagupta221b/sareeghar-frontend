@@ -1,8 +1,8 @@
-// Use relative URLs to leverage Next.js proxy - this avoids cross-origin cookie issues
-export const API_BASE_URL = "";
+// For production with proper CORS and SameSite=None cookies
+export const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
 
-// For direct backend access (not recommended due to cookie issues):
-// export const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
+// For local development - uncomment this and use proxy in next.config.ts
+// export const API_BASE_URL = "http://localhost:3001";
 
 export const API_ROUTES = {
   AUTH: `${API_BASE_URL}/api/auth`,

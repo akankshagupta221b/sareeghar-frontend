@@ -18,14 +18,6 @@ const nextConfig: NextConfig = {
       "rmkv.com",
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination: "https://sareeghar-backend-ruddy.vercel.app/api/:path*",
-      },
-    ];
-  },
 };
 
 export default nextConfig;

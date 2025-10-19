@@ -2,6 +2,7 @@ import { API_ROUTES } from "@/utils/api";
 import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import Cookies from "js-cookie";
 
 type User = {
   id: string;
@@ -24,10 +25,11 @@ type AuthStore = {
     password: string
   ) => Promise<{
     success: boolean;
-    data?: { accessToken: string; refreshToken: string };
+    data?: { accessToken: string; refreshToken: string; user: User };
   }>;
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<Boolean>;
+  checkAuth: () => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -66,14 +68,21 @@ export const useAuthStore = create<AuthStore>()(
 
           console.log("Login response: ", response);
 
-          const { accessToken, refreshToken } = response.data.data;
+          const { accessToken, refreshToken, user } = response.data.data;
 
           // Store tokens in localStorage
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
 
-          set({ isLoading: false, user: response.data.user });
-          return { success: true, data: { accessToken, refreshToken } };
+          set({ isLoading: false, user: user || response.data.user });
+          return {
+            success: true,
+            data: {
+              accessToken,
+              refreshToken,
+              user: user || response.data.user,
+            },
+          };
         } catch (error: any) {
           set({
             isLoading: false,
@@ -92,6 +101,12 @@ export const useAuthStore = create<AuthStore>()(
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
 
+          // Clear cookies
+          Cookies.remove("accessToken");
+          Cookies.remove("refreshToken");
+
+          console.log("✅ Logout successful, tokens and cookies cleared");
+
           set({ user: null, isLoading: false });
         } catch (error: any) {
           set({
@@ -107,6 +122,23 @@ export const useAuthStore = create<AuthStore>()(
         } catch (e) {
           console.error(e);
           return false;
+        }
+      },
+      checkAuth: () => {
+        const accessToken = Cookies.get("accessToken");
+        const refreshToken = Cookies.get("refreshToken");
+
+        console.log("🔍 Checking auth status:", {
+          hasAccessToken: !!accessToken,
+          hasRefreshToken: !!refreshToken,
+        });
+
+        // If tokens exist in cookies but not in localStorage, sync them
+        if (accessToken && !localStorage.getItem("accessToken")) {
+          localStorage.setItem("accessToken", accessToken);
+        }
+        if (refreshToken && !localStorage.getItem("refreshToken")) {
+          localStorage.setItem("refreshToken", refreshToken);
         }
       },
     }),
