@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 import { Product } from "./useProductStore";
 
@@ -54,9 +54,7 @@ export const useCollectionsStore = create<CollectionsStore>((set, get) => ({
   fetchCollections: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.COLLECTIONS}/`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`${API_ROUTES.COLLECTIONS}/`);
 
       set({ collections: response.data.data, isLoading: false });
     } catch (e) {
@@ -66,12 +64,9 @@ export const useCollectionsStore = create<CollectionsStore>((set, get) => ({
   createCollection: async (collection) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.COLLECTIONS}/`,
-        collection,
-        {
-          withCredentials: true,
-        }
+        collection
       );
 
       const newCollection = response.data.collection;
@@ -90,12 +85,9 @@ export const useCollectionsStore = create<CollectionsStore>((set, get) => ({
   updateCollection: async (id, collection) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_ROUTES.COLLECTIONS}/update-collection/${id}`,
-        collection,
-        {
-          withCredentials: true,
-        }
+        collection
       );
 
       const updatedCollection = response.data.collection;
@@ -116,9 +108,9 @@ export const useCollectionsStore = create<CollectionsStore>((set, get) => ({
   deleteCollection: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_ROUTES.COLLECTIONS}/delete-collection/${id}`, {
-        withCredentials: true,
-      });
+      await axiosInstance.delete(
+        `${API_ROUTES.COLLECTIONS}/delete-collection/${id}`
+      );
 
       set((state) => ({
         collections: state.collections.filter(

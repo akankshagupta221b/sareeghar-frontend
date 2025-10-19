@@ -43,7 +43,10 @@ function LoginPage() {
     }
 
     const success = await login(formData.email, formData.password);
-    if (success) {
+    if (success.success) {
+      const { accessToken, refreshToken } = success.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       toast({
         title: "Login Successfull!",
       });

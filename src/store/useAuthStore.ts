@@ -19,7 +19,13 @@ type AuthStore = {
     email: string,
     password: string
   ) => Promise<string | null>;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{
+    success: boolean;
+    data?: { accessToken: string; refreshToken: string };
+  }>;
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<Boolean>;
 };
@@ -58,21 +64,34 @@ export const useAuthStore = create<AuthStore>()(
             password,
           });
 
+          console.log("Login response: ", response);
+
+          const { accessToken, refreshToken } = response.data.data;
+
+          // Store tokens in localStorage
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+
           set({ isLoading: false, user: response.data.user });
-          return true;
+          return { success: true, data: { accessToken, refreshToken } };
         } catch (error: any) {
           set({
             isLoading: false,
             error: error?.response?.data?.error || "Login failed",
           });
 
-          return false;
+          return { success: false };
         }
       },
       logout: async () => {
         set({ isLoading: true, error: null });
         try {
           await axiosInstance.post("/api/auth/logout");
+
+          // Clear tokens from localStorage
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+
           set({ user: null, isLoading: false });
         } catch (error: any) {
           set({

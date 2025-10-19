@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 export interface Coupon {
@@ -30,9 +30,8 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
   fetchCoupons: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
-        `${API_ROUTES.COUPON}/fetch-all-coupons`,
-        { withCredentials: true }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.COUPON}/fetch-all-coupons`
       );
       set({ couponList: response.data.couponList, isLoading: false });
     } catch (e) {
@@ -42,12 +41,9 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
   createCoupon: async (coupon) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.COUPON}/create-coupon`,
-        coupon,
-        {
-          withCredentials: true,
-        }
+        coupon
       );
 
       set({ isLoading: false });
@@ -60,9 +56,7 @@ export const useCouponStore = create<CouponStore>((set, get) => ({
   deleteCoupon: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.delete(`${API_ROUTES.COUPON}/${id}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.delete(`${API_ROUTES.COUPON}/${id}`);
       set({ isLoading: false });
       return response.data.success;
     } catch (error) {

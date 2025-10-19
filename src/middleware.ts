@@ -60,6 +60,7 @@ export async function middleware(request: NextRequest) {
         return response;
       } else {
         //ur refresh is also failed
+        console.log(" Refresh token invalid, redirecting to login");
         const response = NextResponse.redirect(
           new URL("/auth/login", request.url)
         );

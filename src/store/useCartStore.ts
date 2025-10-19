@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import debounce from "lodash/debounce";
 import { create } from "zustand";
 
@@ -8,8 +8,8 @@ export interface CartItem {
   productId: string;
   name: string;
   price: number;
-  mrp: number,
-  sellingPrice: number
+  mrp: number;
+  sellingPrice: number;
   image: string;
   color: string;
   size: string;
@@ -31,13 +31,9 @@ export const useCartStore = create<CartStore>((set, get) => {
   const debounceUpdateCartItemQuantity = debounce(
     async (id: string, quantity: number) => {
       try {
-        await axios.put(
-          `${API_ROUTES.CART}/update/${id}`,
-          { quantity },
-          {
-            withCredentials: true,
-          }
-        );
+        await axiosInstance.put(`${API_ROUTES.CART}/update/${id}`, {
+          quantity,
+        });
       } catch (e) {
         set({ error: "Failed to update cart quantity" });
       }
@@ -51,9 +47,9 @@ export const useCartStore = create<CartStore>((set, get) => {
     fetchCart: async () => {
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.get(`${API_ROUTES.CART}/fetch-cart`, {
-          withCredentials: true,
-        });
+        const response = await axiosInstance.get(
+          `${API_ROUTES.CART}/fetch-cart`
+        );
 
         set({ items: response.data.data, isLoading: false });
       } catch (e) {
@@ -63,12 +59,9 @@ export const useCartStore = create<CartStore>((set, get) => {
     addToCart: async (item) => {
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.post(
+        const response = await axiosInstance.post(
           `${API_ROUTES.CART}/add-to-cart`,
-          item,
-          {
-            withCredentials: true,
-          }
+          item
         );
 
         set((state) => ({
@@ -82,9 +75,7 @@ export const useCartStore = create<CartStore>((set, get) => {
     removeFromCart: async (id) => {
       set({ isLoading: true, error: null });
       try {
-        await axios.delete(`${API_ROUTES.CART}/remove/${id}`, {
-          withCredentials: true,
-        });
+        await axiosInstance.delete(`${API_ROUTES.CART}/remove/${id}`);
 
         set((state) => ({
           items: state.items.filter((item) => item.id !== id),
@@ -106,13 +97,7 @@ export const useCartStore = create<CartStore>((set, get) => {
     clearCart: async () => {
       set({ isLoading: true, error: null });
       try {
-        await axios.post(
-          `${API_ROUTES.CART}/clear-cart`,
-          {},
-          {
-            withCredentials: true,
-          }
-        );
+        await axiosInstance.post(`${API_ROUTES.CART}/clear-cart`, {});
 
         set({ items: [], isLoading: false });
       } catch (e) {

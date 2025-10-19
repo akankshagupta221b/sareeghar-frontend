@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 interface OrderItem {
@@ -101,10 +101,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   createPayPalOrder: async (items, total) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.ORDER}/create-paypal-order`,
-        { items, total },
-        { withCredentials: true }
+        { items, total }
       );
       set({ isLoading: false });
       return response.data.id;
@@ -116,12 +115,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   capturePayPalOrder: async (orderId) => {
     set({ isLoading: true, error: null, isPaymentProcessing: true });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.ORDER}/capture-paypal-order`,
-        { orderId },
-        {
-          withCredentials: true,
-        }
+        { orderId }
       );
       set({ isLoading: false, isPaymentProcessing: false });
       return response.data;
@@ -137,9 +133,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   getRazorpayKey: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.ORDER}/get-razorpay-key`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${API_ROUTES.ORDER}/get-razorpay-key`
+      );
       set({ isLoading: false, razorpayKey: response.data.key });
       return response.data.key;
     } catch (error) {
@@ -150,12 +146,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   createRazorpayOrder: async (amount, currency = "INR") => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.ORDER}/create-razorpay-order`,
-        { amount, currency },
-        {
-          withCredentials: true,
-        }
+        { amount, currency }
       );
       set({ isLoading: false });
       return response.data.order;
@@ -167,12 +160,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   verifyRazorpayPayment: async (paymentData) => {
     set({ isLoading: true, error: null, isPaymentProcessing: true });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.ORDER}/verify-razorpay-payment`,
-        paymentData,
-        {
-          withCredentials: true,
-        }
+        paymentData
       );
       set({ isLoading: false, isPaymentProcessing: false });
       return response.data;
@@ -188,12 +178,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   createFinalOrder: async (orderData) => {
     set({ isLoading: true, error: null, isPaymentProcessing: true });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.ORDER}/create-final-order`,
-        orderData,
-        {
-          withCredentials: true,
-        }
+        orderData
       );
       set({
         isLoading: false,
@@ -213,13 +200,9 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   updateOrderStatus: async (orderId, status) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.put(
-        `${API_ROUTES.ORDER}/${orderId}/status`,
-        { status },
-        {
-          withCredentials: true,
-        }
-      );
+      await axiosInstance.put(`${API_ROUTES.ORDER}/${orderId}/status`, {
+        status,
+      });
       set((state) => ({
         currentOrder:
           state.currentOrder && state.currentOrder.id === orderId
@@ -247,11 +230,8 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   getAllOrders: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
-        `${API_ROUTES.ORDER}/get-all-orders-for-admin`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.ORDER}/get-all-orders-for-admin`
       );
       set({ isLoading: false, adminOrders: response.data });
       return response.data;
@@ -263,11 +243,8 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   getOrdersByUserId: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
-        `${API_ROUTES.ORDER}/get-order-by-user-id`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.ORDER}/get-order-by-user-id`
       );
       set({ isLoading: false, userOrders: response.data });
       return response.data;
@@ -280,11 +257,8 @@ export const useOrderStore = create<OrderStore>((set, get) => ({
   getOrder: async (orderId) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
-        `${API_ROUTES.ORDER}/get-single-order/${orderId}`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.ORDER}/get-single-order/${orderId}`
       );
       set({ isLoading: false, currentOrder: response.data });
       return response.data;

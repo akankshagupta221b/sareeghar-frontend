@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 // Types based on Shiprocket API response
@@ -70,12 +70,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
   checkServicibility: async (params) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.SHIPROCKET}/serviceability`,
-        params,
-        {
-          withCredentials: true,
-        }
+        params
       );
 
       if (!response.data.success) {
@@ -91,11 +88,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
         isLoading: false,
       });
       return response.data.data;
-    } catch (error) {
+    } catch (error: any) {
       set({
-        error: axios.isAxiosError(error)
-          ? error?.response?.data?.error || "Failed to check serviceability"
-          : "Failed to check serviceability",
+        error: error?.response?.data?.error || "Failed to check serviceability",
         isLoading: false,
       });
       return null;
@@ -105,12 +100,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
   getBestCourier: async (params) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `http://localhost:3001/api/shiprocket/courier/best`,
-        params,
-        {
-          withCredentials: true,
-        }
+        params
       );
 
       if (!response.data.success) {
@@ -126,11 +118,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
         isLoading: false,
       });
       return response.data.data.bestCourier;
-    } catch (error) {
+    } catch (error: any) {
       set({
-        error: axios.isAxiosError(error)
-          ? error?.response?.data?.error || "Failed to get best courier"
-          : "Failed to get best courier",
+        error: error?.response?.data?.error || "Failed to get best courier",
         isLoading: false,
       });
       return null;
@@ -140,12 +130,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
   getTopCouriers: async (params, count = 3) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.SHIPROCKET}/top?count=${count}`,
-        params,
-        {
-          withCredentials: true,
-        }
+        params
       );
 
       if (!response.data.success) {
@@ -161,11 +148,9 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
         isLoading: false,
       });
       return response.data.data;
-    } catch (error) {
+    } catch (error: any) {
       set({
-        error: axios.isAxiosError(error)
-          ? error?.response?.data?.error || "Failed to get top couriers"
-          : "Failed to get top couriers",
+        error: error?.response?.data?.error || "Failed to get top couriers",
         isLoading: false,
       });
       return null;

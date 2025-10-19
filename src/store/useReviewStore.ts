@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 export interface Review {
@@ -90,11 +90,10 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   fetchProductReviews: async (productId: string, page = 1, limit = 10) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${API_ROUTES.REVIEWS}/product/${productId}`,
         {
           params: { page, limit },
-          withCredentials: true,
         }
       );
 
@@ -115,11 +114,8 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
 
   fetchProductReviewStats: async (productId: string) => {
     try {
-      const response = await axios.get(
-        `${API_ROUTES.REVIEWS}/product/${productId}/stats`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.REVIEWS}/product/${productId}/stats`
       );
 
       set({
@@ -133,9 +129,10 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   createReview: async (reviewData: CreateReviewData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_ROUTES.REVIEWS}`, reviewData, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(
+        `${API_ROUTES.REVIEWS}`,
+        reviewData
+      );
 
       const newReview = response.data.review || response.data;
 
@@ -159,12 +156,9 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   updateReview: async (id: string, reviewData: Partial<CreateReviewData>) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_ROUTES.REVIEWS}/${id}`,
-        reviewData,
-        {
-          withCredentials: true,
-        }
+        reviewData
       );
 
       const updatedReview = response.data.review || response.data;
@@ -190,9 +184,7 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   deleteReview: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_ROUTES.REVIEWS}/${id}`, {
-        withCredentials: true,
-      });
+      await axiosInstance.delete(`${API_ROUTES.REVIEWS}/${id}`);
 
       // Remove the review from the list
       set((state) => ({
@@ -213,12 +205,9 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
 
   markReviewHelpful: async (id: string) => {
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.REVIEWS}/${id}/helpful`,
-        {},
-        {
-          withCredentials: true,
-        }
+        {}
       );
 
       // Update the helpful count in the list
@@ -236,11 +225,8 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
 
   canUserReviewProduct: async (productId: string, orderId: string) => {
     try {
-      const response = await axios.get(
-        `${API_ROUTES.REVIEWS}/check/${productId}/${orderId}`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.REVIEWS}/check/${productId}/${orderId}`
       );
 
       return response.data.canReview || false;
@@ -253,9 +239,9 @@ export const useReviewStore = create<ReviewState>((set, get) => ({
   getUserReviews: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.REVIEWS}/my-reviews`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${API_ROUTES.REVIEWS}/my-reviews`
+      );
 
       const userReviews = response.data.reviews || response.data;
       set({ isLoading: false });

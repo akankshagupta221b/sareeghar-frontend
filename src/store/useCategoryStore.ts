@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 export interface Category {
@@ -34,9 +34,7 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
   fetchCategories: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.CATEGORIES}/`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`${API_ROUTES.CATEGORIES}/`);
 
       set({ categories: response.data.data.categories, isLoading: false });
     } catch (e) {
@@ -46,9 +44,10 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
   createCategory: async (category) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_ROUTES.CATEGORIES}/`, category, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(
+        `${API_ROUTES.CATEGORIES}/`,
+        category
+      );
 
       const newCategory = response.data.category;
 
@@ -66,12 +65,9 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
   updateCategory: async (id, category) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_ROUTES.CATEGORIES}/update-category/${id}`,
-        category,
-        {
-          withCredentials: true,
-        }
+        category
       );
 
       const updatedCategory = response.data.category;
@@ -92,9 +88,9 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
   deleteCategory: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_ROUTES.CATEGORIES}/delete-category/${id}`, {
-        withCredentials: true,
-      });
+      await axiosInstance.delete(
+        `${API_ROUTES.CATEGORIES}/delete-category/${id}`
+      );
 
       set((state) => ({
         categories: state.categories.filter((category) => category.id !== id),

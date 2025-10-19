@@ -21,6 +21,24 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+// Request interceptor to add Authorization header
+axiosInstance.interceptors.request.use(
+  (config) => {
+    // Get access token from localStorage
+    const accessToken = localStorage.getItem("accessToken");
+
+    // If token exists, add it to Authorization header
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Response interceptor to handle token refresh
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -47,13 +65,21 @@ axiosInstance.interceptors.response.use(
 
       try {
         // Try to refresh the token
-        await axiosInstance.post("/api/auth/refresh-token");
+        const response = await axiosInstance.post("/api/auth/refresh-token");
+
+        // If new access token is returned, update localStorage
+        if (response.data?.accessToken) {
+          localStorage.setItem("accessToken", response.data.accessToken);
+        }
+
         processQueue(null);
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        // Redirect to login if refresh fails
+
+        // Clear tokens and redirect to login if refresh fails
         if (typeof window !== "undefined") {
+          localStorage.removeItem("accessToken");
           window.location.href = "/auth/login";
         }
         return Promise.reject(refreshError);

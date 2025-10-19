@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 export interface Brand {
@@ -30,9 +30,7 @@ export const useBrandStore = create<BrandsStore>((set, get) => ({
   fetchBrands: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.BRANDS}/`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`${API_ROUTES.BRANDS}/`);
 
       set({ brands: response.data.data.brands, isLoading: false });
     } catch (e) {
@@ -42,9 +40,7 @@ export const useBrandStore = create<BrandsStore>((set, get) => ({
   createBrand: async (brand) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_ROUTES.BRANDS}/`, brand, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(`${API_ROUTES.BRANDS}/`, brand);
 
       const newBrand = response.data.brand;
 
@@ -62,12 +58,9 @@ export const useBrandStore = create<BrandsStore>((set, get) => ({
   updateBrand: async (id, brand) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${API_ROUTES.BRANDS}/update-brand/${id}`,
-        brand,
-        {
-          withCredentials: true,
-        }
+        brand
       );
 
       const updatedBrand = response.data.brand;
@@ -88,9 +81,7 @@ export const useBrandStore = create<BrandsStore>((set, get) => ({
   deleteBrand: async (id) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_ROUTES.BRANDS}/delete-brand/${id}`, {
-        withCredentials: true,
-      });
+      await axiosInstance.delete(`${API_ROUTES.BRANDS}/delete-brand/${id}`);
 
       set((state) => ({
         brands: state.brands.filter((brand) => brand.id !== id),

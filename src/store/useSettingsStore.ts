@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 
 interface FeatureBanner {
@@ -186,9 +186,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   fetchBanners: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.SETTINGS}/get-banners`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        `${API_ROUTES.SETTINGS}/get-banners`
+      );
       set({ banners: response.data.banners, isLoading: false });
     } catch (e) {
       console.error(e);
@@ -199,11 +199,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   fetchFeaturedProducts: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(
-        `${API_ROUTES.SETTINGS}/fetch-feature-products`,
-        {
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${API_ROUTES.SETTINGS}/fetch-feature-products`
       );
       set({
         featuredProducts: response.data.featuredProducts,
@@ -220,11 +217,10 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     try {
       const formData = new FormData();
       files.forEach((file) => formData.append("images", file));
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.SETTINGS}/banners`,
         formData,
         {
-          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -242,12 +238,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   updateFeaturedProducts: async (productIds: string[]) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${API_ROUTES.SETTINGS}/update-feature-products`,
-        { productIds },
-        {
-          withCredentials: true,
-        }
+        { productIds }
       );
       set({ isLoading: false });
       return response.data.success;
@@ -269,7 +262,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   fetchStoreSettings: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.STORE}/settings`);
+      const response = await axiosInstance.get(`${API_ROUTES.STORE}/settings`);
       set({ storeSettings: response.data.data, isLoading: false });
     } catch (e) {
       console.error("Failed to fetch store settings:", e);
@@ -285,9 +278,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   fetchStoreConfiguration: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.STORE}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`${API_ROUTES.STORE}`);
       set({
         storeConfigurations: response.data.stores || [response.data.store],
         isLoading: false,
@@ -306,9 +297,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   fetchStoreById: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.get(`${API_ROUTES.STORE}/${id}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(`${API_ROUTES.STORE}/${id}`);
       set({ storeSettings: response.data.store, isLoading: false });
     } catch (e) {
       console.error("Failed to fetch store:", e);
@@ -324,9 +313,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   createStore: async (data: CreateStoreInput) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_ROUTES.STORE}`, data, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(`${API_ROUTES.STORE}`, data);
       set({ isLoading: false });
       return response.data.success;
     } catch (e: any) {
@@ -347,9 +334,10 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   updateStore: async (id: string, data: UpdateStoreInput) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.put(`${API_ROUTES.STORE}/${id}`, data, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.put(
+        `${API_ROUTES.STORE}/${id}`,
+        data
+      );
       set({ isLoading: false });
       return response.data.success;
     } catch (e: any) {
@@ -370,9 +358,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   deleteStore: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.delete(`${API_ROUTES.STORE}/${id}`, {
-        withCredentials: true,
-      });
+      const response = await axiosInstance.delete(`${API_ROUTES.STORE}/${id}`);
       set({ isLoading: false });
       return response.data.success;
     } catch (e: any) {
@@ -393,12 +379,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   toggleStoreStatus: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.patch(
+      const response = await axiosInstance.patch(
         `${API_ROUTES.STORE}/${id}/toggle-status`,
-        {},
-        {
-          withCredentials: true,
-        }
+        {}
       );
       set({ isLoading: false });
       return response.data.success;
@@ -420,12 +403,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   toggleMaintenanceMode: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.patch(
+      const response = await axiosInstance.patch(
         `${API_ROUTES.STORE}/${id}/toggle-maintenance`,
-        {},
-        {
-          withCredentials: true,
-        }
+        {}
       );
       set({ isLoading: false });
       return response.data.success;
