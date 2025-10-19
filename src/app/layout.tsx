@@ -3,12 +3,7 @@ import { Inter, Playfair_Display, Alegreya } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import CommonLayout from "@/components/common/layout";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
+import AuthProvider from "@/components/providers/AuthProvider";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
@@ -21,14 +16,6 @@ const alegreya = Alegreya({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
 });
-
-
-
-// const architectsDaughter = Architects_Daughter({
-//   variable: "--font-architects-daughter",
-//   subsets: ["latin"],
-//   weight: ["400"],
-// });
 
 export const metadata: Metadata = {
   title: "SareeGhar - Premium Sarees Collection",
@@ -43,11 +30,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="icon"
+          type="image/x-icon"
+          href="https://res.cloudinary.com/dyc8h8dhp/image/upload/v1760883047/saree-ghar_qusgds.png"
+        ></link>
+      </head>
       <body
         className={`${playfairDisplay.variable} ${alegreya.variable}   antialiased`}
       >
-        <CommonLayout>{children}</CommonLayout>
-        <Toaster />
+        <AuthProvider>
+          <CommonLayout>{children}</CommonLayout>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

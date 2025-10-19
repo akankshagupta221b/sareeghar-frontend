@@ -39,20 +39,24 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     } catch (e) {
       console.error("Token verification failed", e);
+      const refreshTokenValue = request.cookies.get("refreshToken")?.value;
       const refreshResponse = await fetch(
-        "http://localhost:3000/api/auth/refresh-token",
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001/api"
+        }/auth/refresh-token`,
         {
           method: "POST",
-          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken: refreshTokenValue,
+          }),
         }
       );
 
       if (refreshResponse.ok) {
         const response = NextResponse.next();
-        response.cookies.set(
-          "accessToken",
-          refreshResponse.headers.get("Set-Cookie") || ""
-        );
         return response;
       } else {
         //ur refresh is also failed

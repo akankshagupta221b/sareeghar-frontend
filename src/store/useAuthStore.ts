@@ -1,5 +1,5 @@
 import { API_ROUTES } from "@/utils/api";
-import axios from "axios";
+import axiosInstance from "@/lib/axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -24,11 +24,6 @@ type AuthStore = {
   refreshAccessToken: () => Promise<Boolean>;
 };
 
-const axiosInstance = axios.create({
-  baseURL: API_ROUTES.AUTH,
-  withCredentials: true,
-});
-
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -38,7 +33,7 @@ export const useAuthStore = create<AuthStore>()(
       register: async (name, email, password) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axiosInstance.post("/register", {
+          const response = await axiosInstance.post("/api/auth/register", {
             name,
             email,
             password,
@@ -46,12 +41,10 @@ export const useAuthStore = create<AuthStore>()(
 
           set({ isLoading: false });
           return response.data.userId;
-        } catch (error) {
+        } catch (error: any) {
           set({
             isLoading: false,
-            error: axios.isAxiosError(error)
-              ? error?.response?.data?.error || "Registration failed"
-              : "Registration failed",
+            error: error?.response?.data?.error || "Registration failed",
           });
 
           return null;
@@ -60,19 +53,17 @@ export const useAuthStore = create<AuthStore>()(
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await axiosInstance.post("/login", {
+          const response = await axiosInstance.post("/api/auth/login", {
             email,
             password,
           });
 
           set({ isLoading: false, user: response.data.user });
           return true;
-        } catch (error) {
+        } catch (error: any) {
           set({
             isLoading: false,
-            error: axios.isAxiosError(error)
-              ? error?.response?.data?.error || "Login failed"
-              : "Login failed",
+            error: error?.response?.data?.error || "Login failed",
           });
 
           return false;
@@ -81,20 +72,18 @@ export const useAuthStore = create<AuthStore>()(
       logout: async () => {
         set({ isLoading: true, error: null });
         try {
-          await axiosInstance.post("/logout");
+          await axiosInstance.post("/api/auth/logout");
           set({ user: null, isLoading: false });
-        } catch (error) {
+        } catch (error: any) {
           set({
             isLoading: false,
-            error: axios.isAxiosError(error)
-              ? error?.response?.data?.error || "Logout failed"
-              : "Logout failed",
+            error: error?.response?.data?.error || "Logout failed",
           });
         }
       },
       refreshAccessToken: async () => {
         try {
-          await axiosInstance.post("/refresh-token");
+          await axiosInstance.post("/api/auth/refresh-token");
           return true;
         } catch (e) {
           console.error(e);
