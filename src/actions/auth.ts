@@ -94,7 +94,9 @@ export const protectSignInAction = async (email: string) => {
 export const forgotPasswordRequest = async (email: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/request`,
+      `${
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"
+      }/api/auth/forgot-password/request`,
       {
         method: "POST",
         headers: {
@@ -129,7 +131,9 @@ export const forgotPasswordRequest = async (email: string) => {
 export const forgotPasswordVerifyOtp = async (email: string, otp: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/verify-otp`,
+      `${
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"
+      }/api/auth/forgot-password/verify-otp`,
       {
         method: "POST",
         headers: {
@@ -169,7 +173,9 @@ export const forgotPasswordReset = async (
 ) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/reset`,
+      `${
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"
+      }/api/auth/forgot-password/reset`,
       {
         method: "POST",
         headers: {
@@ -204,7 +210,9 @@ export const forgotPasswordReset = async (
 export const forgotPasswordResendOtp = async (email: string) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/auth/forgot-password/resend-otp`,
+      `${
+        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001"
+      }/api/auth/forgot-password/resend-otp`,
       {
         method: "POST",
         headers: {

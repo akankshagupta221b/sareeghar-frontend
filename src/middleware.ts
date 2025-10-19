@@ -20,8 +20,7 @@ const protectedRoutes = ["/account", "/cart", "/checkout"];
 // Super admin routes
 const superAdminRoutes = ["/super-admin"];
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001";
+const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
 
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
