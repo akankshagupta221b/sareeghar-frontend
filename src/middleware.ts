@@ -20,8 +20,6 @@ const protectedRoutes = ["/account", "/cart", "/checkout"];
 // Super admin routes
 const superAdminRoutes = ["/super-admin"];
 
-const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
-
 export async function middleware(request: NextRequest) {
   const accessToken = request.cookies.get("accessToken")?.value;
   const { pathname } = request.nextUrl;
@@ -33,7 +31,6 @@ export async function middleware(request: NextRequest) {
     "🔍 [MIDDLEWARE] AccessToken (first 20 chars):",
     accessToken?.substring(0, 20)
   );
-  console.log("🔍 [MIDDLEWARE] API_BASE_URL:", API_BASE_URL);
 
   // Helper function to check if path matches routes (including dynamic routes)
   const matchesRoute = (path: string, routes: string[]): boolean => {
@@ -69,8 +66,9 @@ export async function middleware(request: NextRequest) {
 
     try {
       // Validate token with backend instead of local verification
-      const verifyUrl = `${API_BASE_URL}/api/auth/verify-token`;
-      console.log("🔍 [MIDDLEWARE] Verification URL:", verifyUrl);
+      // Construct full URL for fetch request in middleware
+      const verifyUrl = new URL("/api/auth/verify-token", request.url);
+      console.log("🔍 [MIDDLEWARE] Verification URL:", verifyUrl.toString());
 
       const verifyResponse = await fetch(verifyUrl, {
         method: "GET",
@@ -153,8 +151,9 @@ export async function middleware(request: NextRequest) {
           return response;
         }
 
-        const refreshUrl = `${API_BASE_URL}/api/auth/refresh-token`;
-        console.log("🔍 [MIDDLEWARE] Refresh URL:", refreshUrl);
+        // Construct full URL for fetch request in middleware
+        const refreshUrl = new URL("/api/auth/refresh-token", request.url);
+        console.log("🔍 [MIDDLEWARE] Refresh URL:", refreshUrl.toString());
 
         const refreshResponse = await fetch(refreshUrl, {
           method: "POST",
