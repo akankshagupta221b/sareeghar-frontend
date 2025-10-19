@@ -48,7 +48,7 @@ export default function ShoppingCart() {
   const total = subtotal + deliveryFee + vatAmount;
   const discount = 0;
 
-  const updateQuantity = (id, delta) => {
+  const updateQuantity = (id: string | number, delta: number) => {
     setCartItems((items) =>
       items.map((item) =>
         item.id === id
@@ -58,7 +58,7 @@ export default function ShoppingCart() {
     );
   };
 
-  const removeItem = (id) => {
+  const removeItem = (id: string | number) => {
     setCartItems((items) => items.filter((item) => item.id !== id));
   };
 

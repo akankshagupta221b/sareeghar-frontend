@@ -19,10 +19,12 @@ interface Product {
   brand: string;
   category: string;
   price: number;
+  mrp: number;
+  sellingPrice: number;
   stock: number;
   images: string[];
   isFeatured: boolean;
-  rating: number;
+  rating?: number;
   sortOrder: number;
   colors?: string[];
 }
@@ -44,8 +46,25 @@ interface Collection {
   };
 }
 
+interface Collection2 {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  products: Product[];
+  _count: {
+    products: number;
+  };
+}
+
 interface CollectionProps {
-  collection: Collection;
+  collection: Collection2;
   isLoading?: boolean;
   error?: string | null;
 }
@@ -201,6 +220,8 @@ export default function DressCollection({
               name={product.name}
               colors={product.colors || []}
               price={product.price}
+              mrp={product.mrp}
+              sellingPrice={product.sellingPrice}
             />
           ))}
         </div>

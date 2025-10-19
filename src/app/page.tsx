@@ -270,22 +270,6 @@ function HomePage() {
           error={error}
         />
       )}
-      {/* Collection section - Shows single featured collection */}
-      {featuredCollection && (
-        <DressCollection
-          collection={featuredCollection}
-          isLoading={isLoading}
-          error={error}
-        />
-      )}
-      {/* Collection section - Shows single featured collection */}
-      {featuredCollection && (
-        <DressCollection
-          collection={featuredCollection}
-          isLoading={isLoading}
-          error={error}
-        />
-      )}
 
       <VideoBanner />
       {/* <BrandAutoScroll /> */}

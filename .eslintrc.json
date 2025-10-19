@@ -2,6 +2,9 @@
   "extends": "next",
   // make that it should not check for no-unescaped-entities in jsx
   "rules": {
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    // Disable any type checking rule.
+    "react/prop-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }

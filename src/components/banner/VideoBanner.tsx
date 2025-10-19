@@ -6,17 +6,6 @@ export default function VideoBanner() {
   const [isPlaying, setIsPlaying] = useState(true);
   const videoRef = useRef(null);
 
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
   return (
     <section className="relative w-full h-[600px] md:h-[700px] overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900">
       {/* Background Video */}
@@ -29,7 +18,7 @@ export default function VideoBanner() {
         playsInline
       >
         <source
-          src="https://www.w3schools.com/html/mov_bbb.mp4"
+          src="https://www.youtube.com/watch?v=pgI-zL1rAZ8"
           type="video/mp4"
         />
         Your browser does not support the video tag.

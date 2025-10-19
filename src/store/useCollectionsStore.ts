@@ -1,6 +1,7 @@
 import { API_ROUTES } from "@/utils/api";
 import axios from "axios";
 import { create } from "zustand";
+import { Product } from "./useProductStore";
 
 export interface Collection {
   id: string;
@@ -14,8 +15,25 @@ export interface Collection {
   updatedAt?: string;
 }
 
+interface Collection2 {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  products: Product[];
+  _count: {
+    products: number;
+  };
+}
+
 interface CollectionsStore {
-  collections: Collection[];
+  collections: Collection2[];
   isLoading: boolean;
   error: string | null;
   fetchCollections: () => Promise<void>;

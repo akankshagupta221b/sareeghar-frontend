@@ -37,11 +37,11 @@ export default function CheckoutForms() {
   const subtotal = 180.11;
   const total = subtotal + deliveryFee + vatAmount;
 
-  const handleShippingChange = (field, value) => {
+  const handleShippingChange = (field: any, value: any) => {
     setShippingForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handlePaymentChange = (field, value) => {
+  const handlePaymentChange = (field: any, value: any) => {
     setPaymentForm((prev) => ({ ...prev, [field]: value }));
   };
 

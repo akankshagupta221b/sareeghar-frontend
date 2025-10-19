@@ -69,8 +69,8 @@ export default function HelpCenter() {
     ],
   };
 
-  const toggleItem = (id) => {
-    setExpandedItems((prev) => ({
+  const toggleItem = (id: any) => {
+    setExpandedItems((prev: any) => ({
       ...prev,
       [id]: !prev[id],
     }));

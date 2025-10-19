@@ -2,8 +2,47 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 
-export const HomePageBanner = ({ banners }) => {
+const dummyBanners = [
+  {
+    id: "1",
+    title: "SUMMER SALE",
+    subtitle: "UP TO 50% OFF",
+    description:
+      "Explore our exclusive summer collection with vibrant colors and lightweight fabrics perfect for the season.",
+    imageUrl:
+      "https://www.manyavar.com/on/demandware.static/-/Library-Sites-ManyavarSharedLibrary/default/dwe6547122/Ace_Your_Saree_Banner_D.jpg",
+  },
+  {
+    id: "2",
+    title: "NEW ARRIVALS",
+    subtitle: "FRESH STYLES",
+    description:
+      "Discover the latest trends in fashion with our new arrivals, designed to keep you stylish all year round.",
+    imageUrl:
+      "https://www.vastranand.in/cdn/shop/articles/Pattu_saree_blog_banner_vastranand_2.png?v=1750220483&width=1024",
+  },
+  {
+    id: "3",
+    title: "EXCLUSIVE COLLECTION",
+    subtitle: "LIMITED EDITION",
+    description:
+      "Shop our exclusive collection of limited edition pieces that combine elegance and uniqueness for your wardrobe.",
+    imageUrl:
+      "https://rmkv.com/cdn/shop/articles/rmkv-silk-sarees-model-blog-banner_1024x1024.jpg?v=1726644370",
+  },
+];
+
+interface Banner {
+  id: string;
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  imageUrl: string;
+}
+
+export const HomePageBanner = ({ banners }: { banners: Banner[] }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  banners = banners && banners.length > 0 ? banners : dummyBanners;
 
   useEffect(() => {
     const bannerTimer = setInterval(() => {
