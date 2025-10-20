@@ -240,12 +240,6 @@ function UserAccountPage() {
               formData={deliveryFormData}
               onChange={handleDeliveryChange}
             />
-            <PaymentSection
-              isEditing={isEditingPayment}
-              onEdit={handlePaymentEdit}
-              formData={paymentFormData}
-              onChange={handlePaymentChange}
-            />
           </div>
         );
       case "addresses":

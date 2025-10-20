@@ -14,10 +14,12 @@ import ProductGrid from "@/components/listing/ProductGrid";
 import ProductPagination from "@/components/listing/ProductPagination";
 import SortFilter from "@/components/listing/SortFilter";
 import { useProductStore } from "@/store/useProductStore";
-import { SlidersHorizontal } from "lucide-react";
+import { useSearchStore } from "@/store/useSearchStore";
+import { SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useBrandStore } from "@/store/useBrandStore";
 import { useCategoryStore } from "@/store/useCategoryStore";
+import { useSearchParams } from "next/navigation";
 
 // Listing page configuration
 const listingConfig = {
@@ -32,6 +34,9 @@ const listingConfig = {
 };
 
 function ProductListingPage() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search");
+
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -39,6 +44,7 @@ function ProductListingPage() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
   const {
     products,
     currentPage,
@@ -49,6 +55,14 @@ function ProductListingPage() {
     isLoading,
     error,
   } = useProductStore();
+
+  const {
+    results: searchResults,
+    isLoading: isSearchLoading,
+    error: searchError,
+    search,
+    clearSearch,
+  } = useSearchStore();
 
   const {
     brands,
@@ -65,36 +79,66 @@ function ProductListingPage() {
   } = useCategoryStore();
 
   const fetchAllProducts = () => {
-    // Convert brand names to brand IDs
-    const brandIds = selectedBrands
-      .map((brandName) => {
-        const brand = brands.find((b) => b.name === brandName);
-        return brand?.id;
-      })
-      .filter((id): id is string => id !== undefined);
+    // If there's a search query, use search API instead
+    if (searchQuery) {
+      // Convert brand names to brand IDs
+      const brandIds = selectedBrands
+        .map((brandName) => {
+          const brand = brands.find((b) => b.name === brandName);
+          return brand?.id;
+        })
+        .filter((id): id is string => id !== undefined);
 
-    // Convert category names to category IDs
-    const categoryIds = selectedCategories
-      .map((categoryName) => {
-        const category = categories.find((c) => c.name === categoryName);
-        return category?.id;
-      })
-      .filter((id): id is string => id !== undefined);
+      // Convert category names to category IDs
+      const categoryIds = selectedCategories
+        .map((categoryName) => {
+          const category = categories.find((c) => c.name === categoryName);
+          return category?.id;
+        })
+        .filter((id): id is string => id !== undefined);
 
-    fetchProductsForClient({
-      page: currentPage,
-      limit: listingConfig.productsPerPage,
-      categories: categoryIds,
-      sizes: selectedSizes,
-      colors: selectedColors,
-      brands: brandIds,
-      minPrice: priceRange[0],
-      maxPrice: priceRange[1],
-      mrp: priceRange[1],
-      sellingPrice: priceRange[1],
-      sortBy,
-      sortOrder,
-    });
+      search({
+        query: searchQuery,
+        page: currentPage,
+        limit: listingConfig.productsPerPage,
+        categories: categoryIds,
+        brands: brandIds,
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1],
+        sortBy,
+        sortOrder,
+      });
+    } else {
+      // Normal product fetch
+      const brandIds = selectedBrands
+        .map((brandName) => {
+          const brand = brands.find((b) => b.name === brandName);
+          return brand?.id;
+        })
+        .filter((id): id is string => id !== undefined);
+
+      const categoryIds = selectedCategories
+        .map((categoryName) => {
+          const category = categories.find((c) => c.name === categoryName);
+          return category?.id;
+        })
+        .filter((id): id is string => id !== undefined);
+
+      fetchProductsForClient({
+        page: currentPage,
+        limit: listingConfig.productsPerPage,
+        categories: categoryIds,
+        sizes: selectedSizes,
+        colors: selectedColors,
+        brands: brandIds,
+        minPrice: priceRange[0],
+        maxPrice: priceRange[1],
+        mrp: priceRange[1],
+        sellingPrice: priceRange[1],
+        sortBy,
+        sortOrder,
+      });
+    }
   };
 
   const handleSortChange = (value: string) => {
@@ -130,6 +174,7 @@ function ProductListingPage() {
     fetchBrands();
     fetchCategories();
   }, [
+    searchQuery,
     currentPage,
     selectedCategories,
     selectedSizes,
@@ -140,15 +185,53 @@ function ProductListingPage() {
     sortOrder,
   ]);
 
+  // Clear search when component unmounts or search query is removed
+  useEffect(() => {
+    if (!searchQuery) {
+      clearSearch();
+    }
+  }, [searchQuery, clearSearch]);
+
+  // Determine which data to display
+  const displayProducts = searchQuery ? searchResults.products : products;
+  const displayLoading = searchQuery ? isSearchLoading : isLoading;
+  const displayError = searchQuery ? searchError : error;
+  const pageTitle = searchQuery
+    ? `Search Results for "${searchQuery}"`
+    : listingConfig.pageTitle;
+
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Header with Title and Controls */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">
-            {listingConfig.pageTitle}
-          </h2>
+          <div className="flex-1">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold">
+              {pageTitle}
+            </h2>
+            {searchQuery && (
+              <p className="text-sm text-gray-600 mt-1">
+                {totalProducts} {totalProducts === 1 ? "result" : "results"}{" "}
+                found
+              </p>
+            )}
+          </div>
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto">
+            {/* Clear Search Button */}
+            {searchQuery && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  window.location.href = "/listing";
+                }}
+                className="flex items-center gap-2"
+              >
+                <X className="h-4 w-4" />
+                Clear Search
+              </Button>
+            )}
+
             {/* Mobile Filter Dialog */}
             <Dialog>
               <DialogTrigger asChild>
@@ -209,13 +292,13 @@ function ProductListingPage() {
           {/* Product Grid and Pagination */}
           <div className="flex-1 min-w-0">
             <ProductGrid
-              products={products}
-              isLoading={isLoading}
-              error={error}
+              products={displayProducts}
+              isLoading={displayLoading}
+              error={displayError}
             />
 
             {/* Pagination */}
-            {!isLoading && !error && products.length > 0 && (
+            {!displayLoading && !displayError && displayProducts.length > 0 && (
               <ProductPagination
                 currentPage={currentPage}
                 totalPages={totalPages}

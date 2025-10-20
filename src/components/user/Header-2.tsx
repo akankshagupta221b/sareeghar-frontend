@@ -19,6 +19,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { useSettingsStore } from "@/store/useSettingsStore";
+import SearchModal from "@/components/search/SearchModal";
 
 // Main navigation items configuration
 const navigationItems = [
@@ -47,6 +48,7 @@ export default function Header2() {
   const [wishlistCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedDropdown, setExpandedDropdown] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const { storeSettings } = useSettingsStore();
 
@@ -55,6 +57,22 @@ export default function Header2() {
   const toggleDropdown = (label: string) => {
     setExpandedDropdown(expandedDropdown === label ? null : label);
   };
+
+  // Handle keyboard shortcut for search (Ctrl/Cmd + K)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === "Escape") {
+        setIsSearchOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <header className="bg-white border-b border-gray-200">
@@ -128,6 +146,14 @@ export default function Header2() {
 
             {/* Action Icons */}
             <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="hover:opacity-70 transition-opacity"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
               <button className="relative hover:opacity-70 transition-opacity">
                 <Heart className="w-5 h-5" />
                 {wishlistCount > 0 && (
@@ -165,6 +191,14 @@ export default function Header2() {
 
         {/* Mobile Action Icons */}
         <div className="flex items-center gap-3 lg:hidden">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:opacity-70 transition-opacity"
+            aria-label="Search"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+
           <button className="relative hover:opacity-70 transition-opacity">
             <Heart className="w-5 h-5" />
             {wishlistCount > 0 && (
@@ -271,6 +305,12 @@ export default function Header2() {
           </SheetContent>
         </SheetPortal>
       </Sheet>
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </header>
   );
 }

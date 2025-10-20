@@ -272,7 +272,6 @@ function HomePage() {
       )}
 
       <VideoBanner />
-      {/* <BrandAutoScroll /> */}
     </div>
   );
 }

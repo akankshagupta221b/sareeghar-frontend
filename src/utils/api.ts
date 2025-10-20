@@ -1,8 +1,8 @@
 // For production with proper CORS and SameSite=None cookies
-export const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
+// export const API_BASE_URL = "https://sareeghar-backend-ruddy.vercel.app";
 
 // For local development - uncomment this and use proxy in next.config.ts
-// export const API_BASE_URL = "http://localhost:3001";
+export const API_BASE_URL = "http://localhost:3001";
 
 export const API_ROUTES = {
   AUTH: `${API_BASE_URL}/api/auth`,
@@ -18,4 +18,5 @@ export const API_ROUTES = {
   CATEGORIES: `${API_BASE_URL}/api/categories`,
   SHIPROCKET: `${API_BASE_URL}/api/shiprocket/courier`,
   REVIEWS: `${API_BASE_URL}/api/reviews`,
+  SEARCH: `${API_BASE_URL}/api/search`,
 };
