@@ -1,223 +1,186 @@
-"use client";
-
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Mail,
-  Phone,
-  MapPin,
-  CreditCard,
-  Shield,
-  Truck,
-  RotateCcw,
-} from "lucide-react";
+import React, { useEffect } from "react";
+import { Instagram, Facebook, Youtube } from "lucide-react";
+import { useSettingsStore } from "@/store/useSettingsStore";
+import Image from "next/image";
 import Link from "next/link";
 
-function Footer() {
+// Footer menu items configuration
+const footerMenus = [
+  {
+    title: "Customer Care",
+    links: [
+      { label: "Shipping & Delivery", href: "/account" },
+      { label: "Order Tracking", href: "/account" },
+      { label: "FAQs", href: "/contact-us" },
+      { label: "Contact Us", href: "/contact-us" },
+      { label: "About Us", href: "/about" },
+      { label: "Help Center", href: "/about" },
+    ],
+  },
+  {
+    title: "Quick Links",
+    links: [
+      { label: "New Arrivals", href: "/listing" },
+      { label: "Best Sellers", href: "/listing" },
+      { label: "Collections", href: "/listing" },
+    ],
+  },
+  {
+    title: "Policies",
+    links: [
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms & Conditions", href: "/terms-and-conditions" },
+      { label: "Return Policy", href: "#" },
+      { label: "Shipping Policy", href: "#" },
+    ],
+  },
+];
+
+export default function Footer2() {
+  const { storeSettings, fetchStoreSettings } = useSettingsStore();
+
+  useEffect(() => {
+    fetchStoreSettings();
+  }, [fetchStoreSettings]);
+
+  const socialLinks = [
+    { Icon: Instagram, href: storeSettings?.instagramUrl, label: "Instagram" },
+    { Icon: Facebook, href: storeSettings?.facebookUrl, label: "Facebook" },
+    { Icon: Youtube, href: storeSettings?.youtubeUrl, label: "Youtube" },
+  ];
+
   return (
-    <footer className="bg-[#F2F2F2] text-gray-900">
-      {/* Main Footer Content */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm font-archivo">
-                  S
-                </span>
-              </div>
-              <h2 className="text-xl font-bold font-archivo">SareeGhar</h2>
-            </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Your trusted destination for authentic and beautiful sarees. We
-              bring you the finest collection of traditional and modern sarees
-              from across India.
+    <footer className="bg-secondary text-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        {/* Top Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-16">
+          {/* Left Column - Description */}
+          <div className="max-w-xl">
+            <p className="text-gray-700 text-base lg:text-lg leading-relaxed">
+              {storeSettings?.name || "Saree Ghar"} is your trusted destination
+              for premium sarees and ethnic wear, bringing elegance and
+              tradition to your wardrobe with our carefully curated collection.
             </p>
-            <div className="flex space-x-4">
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-blue-100 hover:text-blue-600 transition-colors duration-300"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5 text-gray-600" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-pink-100 hover:text-pink-600 transition-colors duration-300"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5 text-gray-600" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-blue-100 hover:text-blue-400 transition-colors duration-300"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5 text-gray-600" />
-              </Link>
-            </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-archivo">Quick Links</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/listing"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Shop All Sarees
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/listing?category=silk"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Silk Sarees
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/listing?category=cotton"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Cotton Sarees
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/listing?category=designer"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Designer Sarees
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cart"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Shopping Cart
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Customer Service */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-archivo">
-              Customer Service
-            </h3>
-            <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/shipping"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Shipping Info
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/returns"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Returns & Exchanges
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/size-guide"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  Size Guide
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/faq"
-                  className="text-gray-600 hover:text-gray-900 transition-colors duration-300 text-sm"
-                >
-                  FAQ
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-archivo">Get in Touch</h3>
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    123 Fashion Street,
-                    <br />
-                    Mumbai, Maharashtra 400001
-                    <br />
-                    India
-                  </p>
-                </div>
+          {/* Right Column - Links Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12">
+            {footerMenus.map((menu, index) => (
+              <div key={index}>
+                <h3 className="font-semibold text-black mb-4 text-sm lg:text-base">
+                  {menu.title}
+                </h3>
+                <ul className="space-y-3">
+                  {menu.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <Link
+                        href={link.href}
+                        className="text-gray-400 hover:text-white transition-colors text-sm lg:text-base"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-gray-600 flex-shrink-0" />
-                <div>
-                  <p className="text-gray-600 text-sm">+91 98765 43210</p>
-                  <p className="text-gray-600 text-sm">+91 87654 32109</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-gray-600 flex-shrink-0" />
-                <p className="text-gray-600 text-sm">support@sareeghar.com</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Bottom Bar */}
-      <div className="bg-[#F2F2F2] border-t border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-600">
-              <p>&copy; 2025 SareeGhar. All rights reserved.</p>
-              <div className="flex space-x-4">
-                <Link
-                  href="/privacy"
-                  className="hover:text-gray-900 transition-colors duration-300"
-                >
-                  Privacy Policy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="hover:text-gray-900 transition-colors duration-300"
-                >
-                  Terms of Service
-                </Link>
-                <Link
-                  href="/cookies"
-                  className="hover:text-gray-900 transition-colors duration-300"
-                >
-                  Cookie Policy
-                </Link>
-              </div>
+        {/* Newsletter Section */}
+        <div className="mb-16">
+          <h3 className="text-xl lg:text-2xl font-semibold mb-6 text-black">
+            Get the latest updates from {storeSettings?.name || "Saree Ghar"}
+          </h3>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-2xl">
+            <input
+              type="email"
+              placeholder="Email address"
+              className="flex-1 bg-white border border-gray-300 rounded-lg px-4 py-3 text-black placeholder-gray-400 focus:outline-none focus:border-gray-400 text-sm lg:text-base"
+            />
+            <button className="bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 text-sm lg:text-base whitespace-nowrap">
+              Subscribe
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom Section with Logo and Social Icons */}
+        <div className="relative pt-16">
+          {/* Large Brand Name Background */}
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <div className="text-black font-bold text-[12vw] font-secondary sm:text-[10vw] lg:text-[6vw] leading-none select-none uppercase">
+              {storeSettings?.name || "Saree Ghar"}
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <span>Powered by</span>
-              <span className="text-gray-900 font-semibold">Next.js 15</span>
+          </div>
+
+          {/* Logo and Social Icons */}
+          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-8 mb-12">
+            {/* Logo */}
+            <div className="flex items-center justify-center">
+              <Image
+                src="/logo/saree-ghar-2.png"
+                alt={`${storeSettings?.name || "Saree Ghar"} Logo`}
+                className="w-16 h-20  sm:w-20 sm:h-24 object-contain"
+                width={80}
+                height={96}
+              />
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              {socialLinks.map((social, index) => {
+                const { Icon } = social;
+                return (
+                  <Link
+                    key={index}
+                    href={social.href || "#"}
+                    className="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
+                    aria-label={social.label}
+                  >
+                    <Icon className="w-5 h-5 text-white" />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Bottom Links */}
+          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-300">
+            <p className="text-gray-600 text-sm">
+              © 2024 {storeSettings?.name || "Saree Ghar"}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-600 hover:text-black transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="#"
+                className="text-gray-600 hover:text-black transition-colors"
+              >
+                Refund Policy
+              </Link>
+              <Link
+                href="/terms-and-conditions"
+                className="text-gray-600 hover:text-black transition-colors"
+              >
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>
@@ -225,5 +188,3 @@ function Footer() {
     </footer>
   );
 }
-
-export default Footer;

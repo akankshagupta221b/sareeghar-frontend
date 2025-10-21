@@ -12,6 +12,7 @@ import { protectSignInAction } from "@/actions/auth";
 import { X, Mail, Lock, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { useSettingsStore } from "@/store/useSettingsStore";
 
 function LoginForm() {
   const [formData, setFormData] = useState({
@@ -21,9 +22,14 @@ function LoginForm() {
   const { toast } = useToast();
   const { login, isLoading } = useAuthStore();
   const { syncGuestCartWithServer } = useCartStore();
+  const { storeSettings, fetchStoreSettings } = useSettingsStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/";
+
+  useEffect(() => {
+    fetchStoreSettings();
+  }, [fetchStoreSettings]);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -150,6 +156,20 @@ function LoginForm() {
             </Link>
 
             <div className="w-full max-w-md mx-auto">
+              {/* Logo - Centered */}
+              <Link
+                href="/"
+                className="flex items-center justify-center mb-8 hover:opacity-80 transition-opacity"
+              >
+                <Image
+                  src="/logo/saree-ghar.jpg"
+                  alt={`${storeSettings?.name || "Saree Ghar"} Logo`}
+                  width={80}
+                  height={100}
+                  className="object-contain"
+                />
+              </Link>
+
               {/* Header */}
               <div className="mb-8">
                 <h1 className="text-4xl font-bold text-gray-900 mb-3">Login</h1>

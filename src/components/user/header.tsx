@@ -1,330 +1,500 @@
 "use client";
 
+import React, { useState } from "react";
+import { useCartStore } from "@/store/useCartStore";
 import {
-  ArrowLeft,
-  Menu,
-  ShoppingBag,
-  ShoppingCart,
-  User,
   Search,
   Heart,
+  User,
+  ShoppingCart,
+  ChevronDown,
+  Menu,
+  X,
 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { useAuthStore } from "@/store/useAuthStore";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
-import { useEffect, useState } from "react";
-import { useCartStore } from "@/store/useCartStore";
+  SheetOverlay,
+  SheetPortal,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { useSettingsStore } from "@/store/useSettingsStore";
+import SearchModal from "@/components/search/SearchModal";
 
-const navItems = [
+// Main navigation items configuration with subcategories
+const navigationItems = [
+  { label: "HOME", href: "/", bold: true, subCategories: [] },
   {
-    title: "HOME",
-    to: "/",
+    label: "SHOP SAREES",
+    href: "/listing",
+    subCategories: [
+      {
+        title: "BY OCCASION",
+        items: [
+          { label: "Summer Sarees", href: "/listing?occasion=summer" },
+          { label: "Wedding Sarees", href: "/listing?occasion=wedding" },
+          { label: "Engagement Sarees", href: "/listing?occasion=engagement" },
+          { label: "Reception Sarees", href: "/listing?occasion=reception" },
+          { label: "Haldi Sarees", href: "/listing?occasion=haldi" },
+          { label: "Festive Sarees", href: "/listing?occasion=festive" },
+          { label: "Party Wear Sarees", href: "/listing?occasion=party" },
+        ],
+      },
+      {
+        title: "BY TYPE",
+        items: [
+          { label: "Floral Sarees", href: "/listing?type=floral" },
+          { label: "Pastel Sarees", href: "/listing?type=pastel" },
+          { label: "Sequins Sarees", href: "/listing?type=sequins" },
+          { label: "Stonework Sarees", href: "/listing?type=stonework" },
+          { label: "Printed Sarees", href: "/listing?type=printed" },
+          { label: "Heavy Sarees", href: "/listing?type=heavy" },
+        ],
+      },
+      {
+        title: "BY MATERIAL",
+        items: [
+          { label: "Art Silk Sarees", href: "/listing?material=art-silk" },
+          { label: "Organza Sarees", href: "/listing?material=organza" },
+          { label: "Satin Sarees", href: "/listing?material=satin" },
+          { label: "Banarasi Sarees", href: "/listing?material=banarasi" },
+          { label: "Net Sarees", href: "/listing?material=net" },
+          { label: "Crepe Sarees", href: "/listing?material=crepe" },
+          { label: "Georgette Sarees", href: "/listing?material=georgette" },
+          { label: "Pure Silk Sarees", href: "/listing?material=pure-silk" },
+        ],
+      },
+      {
+        title: "BY COLOUR",
+        items: [
+          { label: "Black Sarees", href: "/listing?color=black" },
+          { label: "Yellow Sarees", href: "/listing?color=yellow" },
+          { label: "Red Sarees", href: "/listing?color=red" },
+          { label: "Green Sarees", href: "/listing?color=green" },
+          { label: "Pink Sarees", href: "/listing?color=pink" },
+          { label: "Blue Sarees", href: "/listing?color=blue" },
+          { label: "Wine Sarees", href: "/listing?color=wine" },
+        ],
+      },
+      {
+        title: "FEATURED",
+        items: [
+          { label: "Sarees Under 5000", href: "/listing?price=under-5000" },
+          { label: "Bestsellers", href: "/listing?filter=bestsellers" },
+          { label: "New Arrivals", href: "/listing?filter=new-arrivals" },
+          { label: "Blouses", href: "/listing?category=blouses" },
+        ],
+      },
+    ],
   },
   {
-    title: "PRODUCTS",
-    to: "/listing",
+    label: "NEW ARRIVALS",
+    href: "/listing",
+    subCategories: [
+      {
+        title: "LATEST",
+        items: [
+          { label: "Latest Collection", href: "/listing?filter=latest" },
+          { label: "Trending Now", href: "/listing?filter=trending" },
+          { label: "This Week", href: "/listing?filter=this-week" },
+          { label: "This Month", href: "/listing?filter=this-month" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "WEDDING COLLECTION",
+    href: "/listing",
+    subCategories: [
+      {
+        title: "BRIDAL",
+        items: [
+          { label: "Bridal Sarees", href: "/listing?occasion=bridal" },
+          { label: "Party Wear", href: "/listing?occasion=party" },
+          { label: "Festive Sarees", href: "/listing?occasion=festive" },
+          { label: "Reception Sarees", href: "/listing?occasion=reception" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "OFFERS & SALE",
+    href: "/listing",
+    subCategories: [
+      {
+        title: "DISCOUNTS",
+        items: [
+          { label: "Up to 30% Off", href: "/listing?discount=30" },
+          { label: "Up to 50% Off", href: "/listing?discount=50" },
+          { label: "Clearance Sale", href: "/listing?sale=clearance" },
+          { label: "Flash Deals", href: "/listing?sale=flash" },
+        ],
+      },
+    ],
   },
 ];
 
-function Header() {
-  const { logout, user } = useAuthStore();
-  const router = useRouter();
-  const [mobileView, setMobileView] = useState<"menu" | "account">("menu");
-  const [showSheetDialog, setShowSheetDialog] = useState(false);
-  const { fetchCart, items } = useCartStore();
-  const isAuthenticated = !!user;
+// Dropdown options configuration
+const dropdownOptions = [
+  {
+    label: "INR",
+    options: [],
+  },
+];
 
-  useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+// Site configuration
+const siteConfig = {
+  siteName: "SAREE GHAR",
+  searchPlaceholder: "Search",
+};
 
-  async function handleLogout() {
-    await logout();
-    router.push("/auth/login");
-  }
+export default function Header2() {
+  const [wishlistCount] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedDropdown, setExpandedDropdown] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
 
-  const renderMobileMenuItems = () => {
-    switch (mobileView) {
-      case "account":
-        return (
-          <div className="space-y-4 animate-in slide-in-from-right-5 duration-200">
-            <div className="flex items-center pb-4 border-b">
-              <Button
-                onClick={() => setMobileView("menu")}
-                variant="ghost"
-                size="icon"
-                className="hover:bg-gray-100"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <h3 className="ml-2 text-lg font-semibold text-gray-800">
-                Account
-              </h3>
-            </div>
-            {isAuthenticated ? (
-              <nav className="space-y-3">
-                <button
-                  onClick={() => {
-                    setShowSheetDialog(false);
-                    router.push("/account");
-                  }}
-                  className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200"
-                >
-                  <User className="mr-3 h-5 w-5 text-gray-600" />
-                  <span className="text-gray-800 font-medium">
-                    Your Account
-                  </span>
-                </button>
-                <button
-                  onClick={() => {
-                    setShowSheetDialog(false);
-                    setMobileView("menu");
-                    handleLogout();
-                  }}
-                  className="flex items-center w-full p-3 text-left hover:bg-red-50 rounded-lg transition-colors duration-200 text-red-600"
-                >
-                  <span className="font-medium">Logout</span>
-                </button>
-              </nav>
-            ) : (
-              <nav className="space-y-3">
-                <button
-                  onClick={() => {
-                    setShowSheetDialog(false);
-                    router.push("/auth/login");
-                  }}
-                  className="flex items-center w-full p-3 text-left hover:bg-gray-50 rounded-lg transition-colors duration-200"
-                >
-                  <User className="mr-3 h-5 w-5 text-gray-600" />
-                  <span className="text-gray-800 font-medium">Login</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setShowSheetDialog(false);
-                    router.push("/auth/register");
-                  }}
-                  className="flex items-center w-full p-3 text-left hover:bg-blue-50 rounded-lg transition-colors duration-200 text-blue-600"
-                >
-                  <span className="font-medium">Create Account</span>
-                </button>
-              </nav>
-            )}
-          </div>
-        );
+  const { storeSettings } = useSettingsStore();
 
-      default:
-        return (
-          <div className="space-y-6 py-6 animate-in slide-in-from-left-5 duration-200">
-            <div className="space-y-2">
-              {navItems.map((navItem) => (
-                <button
-                  className="block w-full font-semibold p-3 cursor-pointer text-left hover:bg-gray-50 rounded-lg transition-colors duration-200 text-gray-800"
-                  onClick={() => {
-                    setShowSheetDialog(false);
-                    router.push(navItem.to);
-                  }}
-                  key={navItem.title}
-                >
-                  {navItem.title}
-                </button>
-              ))}
-            </div>
-            <div className="space-y-3 pt-4 border-t">
-              <button
-                onClick={() => setMobileView("account")}
-                className="flex items-center w-full p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-              >
-                <User className="mr-3 h-5 w-5 text-gray-600" />
-                <span className="text-gray-800 font-medium">Account</span>
-              </button>
-              <button
-                onClick={() => {
-                  setShowSheetDialog(false);
-                  router.push("/cart");
-                }}
-                className="flex items-center w-full p-3 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-              >
-                <ShoppingBag className="mr-3 h-5 w-5 text-gray-600" />
-                <span className="text-gray-800 font-medium">
-                  Cart ({items?.length || 0})
-                </span>
-              </button>
-            </div>
-          </div>
-        );
-    }
+  const { items } = useCartStore();
+
+  const toggleDropdown = (label: string) => {
+    setExpandedDropdown(expandedDropdown === label ? null : label);
   };
 
-  return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
-      <div className="container mx-auto px-4 lg:px-6">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo Section */}
-          <Link
-            className="flex items-center space-x-2 text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-purple-700 transition-all duration-300"
-            href="/"
-          >
-            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
-            </div>
-            <span>ECOMMERCE</span>
-          </Link>
+  // Handle keyboard shortcut for search (Ctrl/Cmd + K)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+      if (e.key === "Escape") {
+        setIsSearchOpen(false);
+      }
+    };
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8 flex-1 justify-center">
-            <nav className="flex items-center space-x-8">
-              {navItems.map((item, index) => (
-                <Link
-                  href={item.to}
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  return (
+    <header className="bg-white border-b border-gray-200">
+      {/* Main Header */}
+      <div className="flex items-center justify-between px-4 md:px-6 py-4">
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="lg:hidden hover:opacity-70 transition-opacity"
+          aria-label="Open menu"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+
+        {/* Logo - Centered on mobile, left on desktop */}
+        <div className="flex items-center lg:hidden absolute left-1/2 transform -translate-x-1/2">
+          <a
+            href="/"
+            className="text-2xl font-medium font-secondary tracking-tight"
+          >
+            {siteConfig.siteName}
+          </a>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex items-center w-full max-w-7xl mx-auto">
+          {/* Left - Logo */}
+          <div className="flex items-center flex-shrink-0">
+            <img
+              src="/logo/saree-ghar.jpg"
+              alt="Saree Ghar Logo"
+              className="w-24 h-32 object-contain"
+            />
+          </div>
+
+          {/* Center - Brand Name & Navigation */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8">
+            <a
+              href="/"
+              className="text-5xl font-medium font-secondary tracking-tight"
+            >
+              {siteConfig.siteName}
+            </a>
+
+            <nav className="flex items-center gap-6 text-base font-medium whitespace-nowrap">
+              {navigationItems.map((item, index) => (
+                <div
                   key={index}
-                  className="relative text-sm font-semibold text-gray-700 hover:text-blue-600 transition-all duration-300 group py-2 px-1"
+                  className="relative"
+                  onMouseEnter={() => setActiveCategory(index)}
+                  onMouseLeave={() => setActiveCategory(null)}
                 >
-                  {item.title}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300"></span>
-                </Link>
+                  <a
+                    href={item.href}
+                    className={`hover:opacity-70 transition-opacity text-sm ${
+                      item.bold ? "font-semibold" : ""
+                    } flex items-center gap-1 cursor-pointer`}
+                  >
+                    {item.label}
+                    {item.subCategories && item.subCategories.length > 0 && (
+                      <ChevronDown className="w-3 h-3" />
+                    )}
+                  </a>
+
+                  {/* Mega Menu Dropdown */}
+                  {item.subCategories &&
+                    item.subCategories.length > 0 &&
+                    activeCategory === index && (
+                      <div className="fixed left-0 right-0 top-[180px] z-50">
+                        <div className="w-full bg-white shadow-xl border-t border-gray-200">
+                          <div className="max-w-7xl mx-auto px-8 py-8">
+                            <div
+                              className="grid gap-8"
+                              style={{
+                                gridTemplateColumns: `repeat(${item.subCategories.length}, 1fr)`,
+                              }}
+                            >
+                              {item.subCategories.map((subCat, subIndex) => (
+                                <div key={subIndex}>
+                                  <h3 className="font-semibold text-xs text-gray-900 mb-4 tracking-wider">
+                                    {subCat.title}
+                                  </h3>
+                                  <ul className="space-y-2">
+                                    {subCat.items.map((item, itemIndex) => (
+                                      <li key={itemIndex}>
+                                        <a
+                                          href={item.href}
+                                          className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all duration-200"
+                                        >
+                                          {item.label}
+                                        </a>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                </div>
               ))}
             </nav>
           </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-3">
-            {/* Search Button */}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-gray-100 hover:scale-105 transition-all duration-200"
-            >
-              <Search className="h-5 w-5 text-gray-600" />
-            </Button>
-
-            {/* Wishlist Button */}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="hover:bg-gray-100 hover:scale-105 transition-all duration-200"
-            >
-              <Heart className="h-5 w-5 text-gray-600" />
-            </Button>
-
-            {/* Cart Button */}
-            <div
-              className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 hover:scale-105"
-              onClick={() => router.push("/cart")}
-            >
-              <ShoppingCart className="h-5 w-5 text-gray-600" />
-              {items && items.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs rounded-full flex items-center justify-center font-medium shadow-lg animate-pulse">
-                  {items.length}
-                </span>
-              )}
-            </div>
-
-            {/* User Menu */}
-            {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="hover:bg-gray-100 hover:scale-105 transition-all duration-200"
-                  >
-                    <User className="h-5 w-5 text-gray-600" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 mt-2">
-                  <DropdownMenuItem
-                    onClick={() => router.push("/account")}
-                    className="cursor-pointer hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    Your Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="cursor-pointer hover:bg-red-50 text-red-600 transition-colors duration-200"
-                  >
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  onClick={() => router.push("/auth/login")}
-                  className="hover:bg-gray-100 transition-all duration-200 font-semibold"
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => router.push("/auth/register")}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold transition-all duration-200"
-                >
-                  Sign Up
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu */}
-          <div className="lg:hidden flex items-center space-x-2">
-            {/* Mobile Cart */}
-            <div
-              className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              onClick={() => router.push("/cart")}
-            >
-              <ShoppingCart className="h-5 w-5 text-gray-600" />
-              {items && items.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                  {items.length}
-                </span>
-              )}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <Sheet
-              open={showSheetDialog}
-              onOpenChange={() => {
-                setShowSheetDialog(false);
-                setMobileView("menu");
-              }}
-            >
-              <Button
-                onClick={() => setShowSheetDialog(!showSheetDialog)}
-                size="icon"
-                variant="ghost"
-                className="hover:bg-gray-100 transition-all duration-200"
+          {/* Right - Icons & Options */}
+          <div className="flex items-center gap-6 flex-shrink-0">
+            {/* Dropdown Options */}
+            {dropdownOptions.map((dropdown, index) => (
+              <button
+                key={index}
+                className="flex items-center gap-1 text-base font-medium hover:opacity-70 transition-opacity"
               >
-                <Menu className="h-6 w-6 text-gray-600" />
-              </Button>
-              <SheetContent side="left" className="w-80 p-0">
-                <SheetHeader className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b">
-                  <SheetTitle className="text-left text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    ECOMMERCE
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="p-6">{renderMobileMenuItems()}</div>
-              </SheetContent>
-            </Sheet>
+                {storeSettings?.currencySymbol || "₹"} {dropdown.label}
+              </button>
+            ))}
+
+            {/* Action Icons */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="hover:opacity-70 transition-opacity"
+                aria-label="Search"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              <button className="relative hover:opacity-70 transition-opacity">
+                <Heart className="w-5 h-5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => {
+                  window.location.href = "/account";
+                }}
+                className="hover:opacity-70 transition-opacity"
+              >
+                <User className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => {
+                  window.location.href = "/cart";
+                }}
+                className="relative hover:opacity-70 transition-opacity"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {items && items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
+                    {items.length}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Action Icons */}
+        <div className="flex items-center gap-3 lg:hidden">
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:opacity-70 transition-opacity"
+            aria-label="Search"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+
+          <button className="relative hover:opacity-70 transition-opacity">
+            <Heart className="w-5 h-5" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
+                {wishlistCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => {
+              window.location.href = "/account";
+            }}
+            className="hover:opacity-70 transition-opacity"
+          >
+            <User className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={() => {
+              window.location.href = "/cart";
+            }}
+            className="relative hover:opacity-70 transition-opacity"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {items && items.length > 0 && (
+              <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
+                {items.length}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Sidebar Menu */}
+      <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+        <SheetPortal>
+          <SheetOverlay className="fixed inset-0 bg-black/50 z-50" />
+          <SheetContent
+            className="fixed top-0 left-0 h-full w-[280px] bg-white shadow-xl z-50 overflow-y-auto"
+            side="left"
+          >
+            {/* Mobile Menu Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h2 className="text-xl font-semibold">{siteConfig.siteName}</h2>
+              <SheetClose asChild>
+                <button
+                  className="hover:opacity-70 transition-opacity"
+                  aria-label="Close menu"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </SheetClose>
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="flex flex-col p-4">
+              {navigationItems.map((item, index) => (
+                <div key={index} className="border-b border-gray-100">
+                  {item.subCategories && item.subCategories.length > 0 ? (
+                    <>
+                      <button
+                        onClick={() => toggleDropdown(item.label)}
+                        className={`w-full flex justify-between items-center py-3 text-gray-700 font-medium text-sm ${
+                          item.bold ? "font-semibold" : ""
+                        }`}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${
+                            expandedDropdown === item.label ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {expandedDropdown === item.label && (
+                        <div className="pb-3 space-y-4">
+                          {item.subCategories.map((subCat, subIndex) => (
+                            <div key={subIndex} className="pl-4">
+                              <h4 className="font-semibold text-xs text-gray-900 mb-2 tracking-wider">
+                                {subCat.title}
+                              </h4>
+                              <ul className="space-y-2">
+                                {subCat.items.map((subItem, itemIndex) => (
+                                  <li key={itemIndex}>
+                                    <a
+                                      href={subItem.href}
+                                      onClick={() => setIsMobileMenuOpen(false)}
+                                      className="text-sm text-gray-600 hover:text-gray-900 block py-1"
+                                    >
+                                      {subItem.label}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <a
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`block py-3 text-gray-700 font-medium text-sm ${
+                        item.bold ? "font-semibold" : ""
+                      }`}
+                    >
+                      {item.label}
+                    </a>
+                  )}
+                </div>
+              ))}
+
+              {/* Mobile Dropdown Options */}
+              <div className="mt-4 space-y-2">
+                {dropdownOptions.map((dropdown, index) => (
+                  <div key={index} className="border-b border-gray-100">
+                    <button
+                      onClick={() => toggleDropdown(dropdown.label)}
+                      className="w-full flex items-center justify-between py-3 px-2 hover:bg-gray-50 transition-colors font-medium"
+                    >
+                      {dropdown.label}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          expandedDropdown === dropdown.label
+                            ? "rotate-180"
+                            : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </nav>
+          </SheetContent>
+        </SheetPortal>
+      </Sheet>
+
+      {/* Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
     </header>
   );
 }
-
-export default Header;

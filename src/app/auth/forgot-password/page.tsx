@@ -3,8 +3,9 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useSettingsStore } from "@/store/useSettingsStore";
 import { useRouter } from "next/navigation";
 import {
   X,
@@ -34,7 +35,12 @@ function ForgotPasswordPage() {
   const [otpTimer, setOtpTimer] = useState(0);
 
   const { toast } = useToast();
+  const { storeSettings, fetchStoreSettings } = useSettingsStore();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchStoreSettings();
+  }, [fetchStoreSettings]);
 
   // Start countdown timer
   const startTimer = () => {
@@ -560,7 +566,23 @@ function ForgotPasswordPage() {
               <X size={24} />
             </Link>
 
-            <div className="w-full max-w-md mx-auto">{renderStepContent()}</div>
+            <div className="w-full max-w-md mx-auto">
+              {/* Logo - Centered */}
+              <Link
+                href="/"
+                className="flex items-center justify-center mb-8 hover:opacity-80 transition-opacity"
+              >
+                <Image
+                  src="/logo/saree-ghar.jpg"
+                  alt={`${storeSettings?.name || "Saree Ghar"} Logo`}
+                  width={80}
+                  height={100}
+                  className="object-contain"
+                />
+              </Link>
+
+              {renderStepContent()}
+            </div>
           </div>
         </div>
       </div>

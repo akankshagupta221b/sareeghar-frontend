@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-alegreya), sans-serif;
+  /* font-family: var(--font-alegreya), sans-serif; */
+  font-family: var(--font-instrument-sans), sans-serif;
 }
 
 /* Set Alegreya for headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-alegreya), sans-serif;
+  /* font-family: var(--font-alegreya), sans-serif; */
+  font-family: var(--font-instrument-sans), sans-serif;
 }
 
 @layer base {

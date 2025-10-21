@@ -1,61 +1,50 @@
 import type { FC } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Mail, User as UserIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export const ProfileSection: FC = () => {
   const { user } = useAuthStore();
 
   if (!user) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="text-center py-12">
-            <p className="text-gray-500">Please log in to view your profile.</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="bg-white border-b border-gray-200 pb-6 sm:pb-8">
+        <div className="text-center py-12">
+          <p className="text-gray-500">Please log in to view your profile.</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <h2 className="text-2xl font-bold mb-6">Profile Information</h2>
-        <div className="space-y-6">
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <UserIcon size={24} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Full Name</p>
-              <p className="font-semibold text-lg">{user.name || "Not provided"}</p>
-            </div>
-          </div>
+    <div className="bg-white border-b border-gray-200 pb-6 sm:pb-8">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold tracking-wide">
+          PROFILE INFORMATION
+        </h2>
+      </div>
 
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <Mail size={24} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Email Address</p>
-              <p className="font-semibold text-lg">{user.email}</p>
-            </div>
-          </div>
+      <div className="space-y-3 sm:space-y-4">
+        <Input
+          value={user.name || "Not provided"}
+          placeholder="Full Name"
+          className="bg-gray-50 border-gray-200 focus:border-gray-300 focus:ring-0"
+          disabled
+        />
 
-          <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-            <div className="p-3 bg-primary/10 rounded-full">
-              <UserIcon size={24} className="text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Account Type</p>
-              <p className="font-semibold text-lg">
-                {user.role === "SUPER_ADMIN" ? "Administrator" : "Customer"}
-              </p>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        <Input
+          value={user.email}
+          placeholder="Email Address"
+          className="bg-gray-50 border-gray-200 focus:border-gray-300 focus:ring-0"
+          disabled
+        />
+
+        <Input
+          value={user.role === "SUPER_ADMIN" ? "Administrator" : "Customer"}
+          placeholder="Account Type"
+          className="bg-gray-50 border-gray-200 focus:border-gray-300 focus:ring-0"
+          disabled
+        />
+      </div>
+    </div>
   );
 };

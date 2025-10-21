@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { AccountSidebar } from "@/components/user/account/AccountSidebar";
 import { DeliverySection } from "@/components/user/account/DeliverySection";
 import { PaymentSection } from "@/components/user/account/PaymentSection";
+import { ProfileSection } from "@/components/user/account/ProfileSection";
+import { ContactSection } from "@/components/user/account/ContactSection";
 import { AddressListMinimal } from "@/components/user/account/AddressListMinimal";
 import {
   AddressFormMinimal,
@@ -232,6 +234,7 @@ function UserAccountPage() {
       case "account":
         return (
           <div className="space-y-6 sm:space-y-8">
+            <ProfileSection />
             <DeliverySection
               address={addresses[0] || null}
               isEditing={isEditingDelivery}
@@ -274,14 +277,7 @@ function UserAccountPage() {
           </div>
         );
       case "contact":
-        return (
-          <div className="bg-white">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 tracking-wide">
-              CONTACT US
-            </h2>
-            <p className="text-gray-600">Get in touch with our support team.</p>
-          </div>
-        );
+        return <ContactSection />;
       case "help":
         return (
           <div className="bg-white">
