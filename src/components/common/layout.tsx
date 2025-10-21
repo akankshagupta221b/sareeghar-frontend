@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import PromoBanner from "../banner/PromoBanner";
 import Footer from "../user/Footer-2";
-import Header from "../user/Header";
+import Header from "../user/Header-2";
 
 const pathsNotToShowHeaders = ["/auth", "/super-admin"];
 
