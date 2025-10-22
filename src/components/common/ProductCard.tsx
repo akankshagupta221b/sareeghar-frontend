@@ -48,7 +48,7 @@ export default function ProductCard({
         <p className="text-xs sm:text-sm text-gray-500">{category}</p>
 
         {/* Brand/Product Name */}
-        <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-medium uppercase tracking-wide line-clamp-2">
+        <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-medium tracking-wide line-clamp-2">
           {name}
         </h3>
 

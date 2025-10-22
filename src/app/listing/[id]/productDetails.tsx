@@ -111,9 +111,7 @@ function ProductDetailsContent({ id }: { id: string }) {
             PRODUCTS
           </Link>
           <span className="text-gray-400">/</span>
-          <span className="text-gray-400 uppercase line-clamp-1">
-            {product.name}
-          </span>
+          <span className="text-gray-400 line-clamp-1">{product.name}</span>
         </div>
       </div>
 

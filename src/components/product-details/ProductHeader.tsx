@@ -37,7 +37,7 @@ export default function ProductHeader({
         <p className="text-xs sm:text-sm text-black/50 mb-1 sm:mb-2">
           {category}
         </p>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-medium mb-2 sm:mb-4 uppercase leading-snug">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-medium mb-2 sm:mb-4 leading-snug">
           {name}
         </h1>
 
