@@ -241,7 +241,7 @@ export default function Header2() {
                     item.subCategories.length > 0 &&
                     activeCategory === index && (
                       <div
-                        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50"
+                        className="absolute left-1/2 -translate-x-1/2 top-full pt-4 z-50"
                         onMouseEnter={() => setActiveCategory(index)}
                         onMouseLeave={() => setActiveCategory(null)}
                         style={{
@@ -256,7 +256,7 @@ export default function Header2() {
                                 gridTemplateColumns: `repeat(${Math.min(
                                   item.subCategories.length,
                                   4
-                                )}, minmax(150px, 200px))`,
+                                )}, minmax(130px, 200px))`,
                               }}
                             >
                               {item.subCategories.map((subCat, subIndex) => (
