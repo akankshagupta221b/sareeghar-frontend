@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/useCartStore";
+import { useCategoryStore, Category } from "@/store/useCategoryStore";
 import {
   Search,
   Heart,
@@ -21,119 +22,6 @@ import {
 import { useSettingsStore } from "@/store/useSettingsStore";
 import SearchModal from "@/components/search/SearchModal";
 
-// Main navigation items configuration with subcategories
-const navigationItems = [
-  { label: "HOME", href: "/", bold: true, subCategories: [] },
-  {
-    label: "SHOP SAREES",
-    href: "/listing",
-    subCategories: [
-      {
-        title: "BY OCCASION",
-        items: [
-          { label: "Summer Sarees", href: "/listing?occasion=summer" },
-          { label: "Wedding Sarees", href: "/listing?occasion=wedding" },
-          { label: "Engagement Sarees", href: "/listing?occasion=engagement" },
-          { label: "Reception Sarees", href: "/listing?occasion=reception" },
-          { label: "Haldi Sarees", href: "/listing?occasion=haldi" },
-          { label: "Festive Sarees", href: "/listing?occasion=festive" },
-          { label: "Party Wear Sarees", href: "/listing?occasion=party" },
-        ],
-      },
-      {
-        title: "BY TYPE",
-        items: [
-          { label: "Floral Sarees", href: "/listing?type=floral" },
-          { label: "Pastel Sarees", href: "/listing?type=pastel" },
-          { label: "Sequins Sarees", href: "/listing?type=sequins" },
-          { label: "Stonework Sarees", href: "/listing?type=stonework" },
-          { label: "Printed Sarees", href: "/listing?type=printed" },
-          { label: "Heavy Sarees", href: "/listing?type=heavy" },
-        ],
-      },
-      {
-        title: "BY MATERIAL",
-        items: [
-          { label: "Art Silk Sarees", href: "/listing?material=art-silk" },
-          { label: "Organza Sarees", href: "/listing?material=organza" },
-          { label: "Satin Sarees", href: "/listing?material=satin" },
-          { label: "Banarasi Sarees", href: "/listing?material=banarasi" },
-          { label: "Net Sarees", href: "/listing?material=net" },
-          { label: "Crepe Sarees", href: "/listing?material=crepe" },
-          { label: "Georgette Sarees", href: "/listing?material=georgette" },
-          { label: "Pure Silk Sarees", href: "/listing?material=pure-silk" },
-        ],
-      },
-      {
-        title: "BY COLOUR",
-        items: [
-          { label: "Black Sarees", href: "/listing?color=black" },
-          { label: "Yellow Sarees", href: "/listing?color=yellow" },
-          { label: "Red Sarees", href: "/listing?color=red" },
-          { label: "Green Sarees", href: "/listing?color=green" },
-          { label: "Pink Sarees", href: "/listing?color=pink" },
-          { label: "Blue Sarees", href: "/listing?color=blue" },
-          { label: "Wine Sarees", href: "/listing?color=wine" },
-        ],
-      },
-      {
-        title: "FEATURED",
-        items: [
-          { label: "Sarees Under 5000", href: "/listing?price=under-5000" },
-          { label: "Bestsellers", href: "/listing?filter=bestsellers" },
-          { label: "New Arrivals", href: "/listing?filter=new-arrivals" },
-          { label: "Blouses", href: "/listing?category=blouses" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "NEW ARRIVALS",
-    href: "/listing",
-    subCategories: [
-      {
-        title: "LATEST",
-        items: [
-          { label: "Latest Collection", href: "/listing?filter=latest" },
-          { label: "Trending Now", href: "/listing?filter=trending" },
-          { label: "This Week", href: "/listing?filter=this-week" },
-          { label: "This Month", href: "/listing?filter=this-month" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "WEDDING COLLECTION",
-    href: "/listing",
-    subCategories: [
-      {
-        title: "BRIDAL",
-        items: [
-          { label: "Bridal Sarees", href: "/listing?occasion=bridal" },
-          { label: "Party Wear", href: "/listing?occasion=party" },
-          { label: "Festive Sarees", href: "/listing?occasion=festive" },
-          { label: "Reception Sarees", href: "/listing?occasion=reception" },
-        ],
-      },
-    ],
-  },
-  {
-    label: "OFFERS & SALE",
-    href: "/listing",
-    subCategories: [
-      {
-        title: "DISCOUNTS",
-        items: [
-          { label: "Up to 30% Off", href: "/listing?discount=30" },
-          { label: "Up to 50% Off", href: "/listing?discount=50" },
-          { label: "Clearance Sale", href: "/listing?sale=clearance" },
-          { label: "Flash Deals", href: "/listing?sale=flash" },
-        ],
-      },
-    ],
-  },
-];
-
 // Dropdown options configuration
 const dropdownOptions = [
   {
@@ -148,20 +36,115 @@ const siteConfig = {
   searchPlaceholder: "Search",
 };
 
+interface MegaMenuItem {
+  id: string;
+  label: string;
+  href: string;
+  bold?: boolean;
+  subCategories: {
+    id: string;
+    title: string;
+    items: {
+      id: string;
+      label: string;
+      href: string;
+    }[];
+  }[];
+}
+
 export default function Header2() {
   const [wishlistCount] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedDropdown, setExpandedDropdown] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  const [navigationItems, setNavigationItems] = useState<MegaMenuItem[]>([]);
 
   const { storeSettings } = useSettingsStore();
-
   const { items } = useCartStore();
+  const { categories, fetchCategories } = useCategoryStore();
 
   const toggleDropdown = (label: string) => {
     setExpandedDropdown(expandedDropdown === label ? null : label);
   };
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  // Build navigation structure from categories
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    // Helper function to build category tree
+    const buildCategoryTree = (): MegaMenuItem[] => {
+      // Get root categories (parentId is null or doesn't exist)
+      const rootCategories = categories.filter(
+        (cat) => !cat.parentId && cat.isActive
+      );
+
+      return rootCategories.map((root) => {
+        // Get second-level categories (children of root)
+        const secondLevel = categories.filter(
+          (cat) => cat.parentId === root.id && cat.isActive
+        );
+
+        const subCategories = secondLevel.map((secondCat) => {
+          // Get third-level categories (children of second level)
+          const thirdLevel = categories.filter(
+            (cat) => cat.parentId === secondCat.id && cat.isActive
+          );
+
+          // If no third level, create a single item from the second level category itself
+          const items =
+            thirdLevel.length > 0
+              ? thirdLevel.map((thirdCat) => ({
+                  id: thirdCat.id,
+                  label: thirdCat.name,
+                  href: `/listing?categories=${encodeURIComponent(
+                    thirdCat.name
+                  )}`,
+                }))
+              : [
+                  {
+                    id: secondCat.id,
+                    label: secondCat.name,
+                    href: `/listing?categories=${encodeURIComponent(
+                      secondCat.name
+                    )}`,
+                  },
+                ];
+
+          return {
+            id: secondCat.id,
+            title: secondCat.name,
+            items: items,
+          };
+        });
+
+        return {
+          id: root.id,
+          label: root.name.toUpperCase(),
+          href: `/listing?categories=${encodeURIComponent(root.name)}`,
+          bold: false,
+          subCategories: subCategories, // Don't filter, show all second-level categories
+        };
+      });
+    };
+
+    // Add Home as first item
+    const homeItem: MegaMenuItem = {
+      id: "home",
+      label: "HOME",
+      href: "/",
+      bold: true,
+      subCategories: [],
+    };
+
+    const categoryItems = buildCategoryTree();
+    setNavigationItems([homeItem, ...categoryItems]);
+  }, [categories]);
 
   // Handle keyboard shortcut for search (Ctrl/Cmd + K)
   React.useEffect(() => {
@@ -246,8 +229,12 @@ export default function Header2() {
                   {item.subCategories &&
                     item.subCategories.length > 0 &&
                     activeCategory === index && (
-                      <div className="fixed left-0 right-0 top-[180px] z-50">
-                        <div className="w-full bg-white shadow-xl border-t border-gray-200">
+                      <div
+                        className="fixed left-0 right-0 top-[137px] z-50"
+                        onMouseEnter={() => setActiveCategory(index)}
+                        onMouseLeave={() => setActiveCategory(null)}
+                      >
+                        <div className="w-full bg-white shadow-xl border-b border-gray-200">
                           <div className="max-w-7xl mx-auto px-8 py-8">
                             <div
                               className="grid gap-8"

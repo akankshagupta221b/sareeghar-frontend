@@ -35,6 +35,7 @@ export const useCategoryStore = create<CategoriesStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.get(`${API_ROUTES.CATEGORIES}/`);
+      console.log(" Fetched Categories:", response.data);
 
       set({ categories: response.data.data.categories, isLoading: false });
     } catch (e) {
