@@ -241,21 +241,27 @@ export default function Header2() {
                     item.subCategories.length > 0 &&
                     activeCategory === index && (
                       <div
-                        className="fixed left-0 right-0 top-[137px] z-50"
+                        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-50"
                         onMouseEnter={() => setActiveCategory(index)}
                         onMouseLeave={() => setActiveCategory(null)}
+                        style={{
+                          maxWidth: "calc(100vw - 2rem)",
+                        }}
                       >
-                        <div className="w-full bg-white shadow-xl border-b border-gray-200">
-                          <div className="max-w-7xl mx-auto px-8 py-8">
+                        <div className="bg-white shadow-xl border border-gray-200 overflow-hidden">
+                          <div className="px-6 py-6 sm:px-8 sm:py-8">
                             <div
-                              className="grid gap-8"
+                              className="grid gap-6 sm:gap-8"
                               style={{
-                                gridTemplateColumns: `repeat(${item.subCategories.length}, 1fr)`,
+                                gridTemplateColumns: `repeat(${Math.min(
+                                  item.subCategories.length,
+                                  4
+                                )}, minmax(150px, 200px))`,
                               }}
                             >
                               {item.subCategories.map((subCat, subIndex) => (
-                                <div key={subIndex}>
-                                  <h3 className="font-semibold text-xs text-gray-900 mb-4 tracking-wider">
+                                <div key={subIndex} className="min-w-0">
+                                  <h3 className="font-semibold text-xs text-gray-900 mb-3 sm:mb-4 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis">
                                     {subCat.title}
                                   </h3>
                                   <ul className="space-y-2">
@@ -263,7 +269,7 @@ export default function Header2() {
                                       <li key={itemIndex}>
                                         <a
                                           href={item.href}
-                                          className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all duration-200"
+                                          className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all duration-200 block whitespace-nowrap"
                                         >
                                           {item.label}
                                         </a>
