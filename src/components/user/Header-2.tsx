@@ -142,8 +142,16 @@ export default function Header2() {
       subCategories: [],
     };
 
+    const productListing: MegaMenuItem = {
+      id: "product-listing",
+      label: "PRODUCT LISTING",
+      href: "/listing",
+      bold: true,
+      subCategories: [],
+    };
+
     const categoryItems = buildCategoryTree();
-    setNavigationItems([homeItem, ...categoryItems]);
+    setNavigationItems([homeItem, productListing, ...categoryItems]);
   }, [categories]);
 
   // Handle keyboard shortcut for search (Ctrl/Cmd + K)

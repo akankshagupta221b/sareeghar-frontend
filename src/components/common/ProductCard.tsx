@@ -52,32 +52,8 @@ export default function ProductCard({
           {name}
         </h3>
 
-        {/* Color and Price Row */}
+        {/* Price Row */}
         <div className="flex items-center justify-between gap-2">
-          {/* Color Swatches */}
-          <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
-            <div className="flex gap-1">
-              {colors.slice(0, 3).map((color, index) => (
-                <div
-                  key={index}
-                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm flex-shrink-0"
-                  style={{ backgroundColor: color }}
-                  title={color}
-                />
-              ))}
-            </div>
-            {colors.length > 3 && (
-              <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
-                +{colors.length - 3}
-              </span>
-            )}
-            {colors.length <= 3 && colors.length > 0 && (
-              <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">
-                All
-              </span>
-            )}
-          </div>
-
           {/* Price section */}
           <p className="text-sm sm:text-base md:text-lg font-bold whitespace-nowrap">
             ₹{sellingPrice.toFixed(2)}
