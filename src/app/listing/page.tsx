@@ -30,7 +30,7 @@ const listingConfig = {
       "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop",
   },
   pageTitle: "All Products",
-  productsPerPage: 5,
+  productsPerPage: 12,
 };
 
 function ProductListingContent() {
