@@ -267,15 +267,6 @@ function UserAccountPage() {
         return <OrdersTable orders={userOrders} />;
       case "reviews":
         return <MyReviews />;
-      case "wishlist":
-        return (
-          <div className="bg-white">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 tracking-wide">
-              MY WISHLIST
-            </h2>
-            <p className="text-gray-500">Your wishlist is empty.</p>
-          </div>
-        );
       case "contact":
         return <ContactSection />;
       case "help":

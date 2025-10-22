@@ -157,14 +157,6 @@ export function RazorpayButton({
 
   return (
     <div className="space-y-3">
-      {/* Test Mode Warning */}
-      {razorpayKey?.startsWith("rzp_test") && (
-        <div className="bg-secondary border border-secondary text-secondary-foreground px-3 py-2 rounded text-sm">
-          <strong>🧪 Test Mode:</strong> Use test cards for payment. No real
-          money will be charged.
-        </div>
-      )}
-
       <Button
         onClick={handlePayment}
         disabled={disabled || isLoading || !scriptLoaded || !razorpayKey}
@@ -174,7 +166,10 @@ export function RazorpayButton({
           ? "Processing..."
           : `${
               razorpayKey?.startsWith("rzp_test") ? "Test Pay" : "Pay"
-            } ₹${amount} with Razorpay`}
+            } ₹${amount.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })} with Razorpay`}
       </Button>
     </div>
   );

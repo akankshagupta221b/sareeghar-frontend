@@ -214,9 +214,9 @@ function UserCartPage() {
                       >
                         +
                       </button>
-                      <button className="text-gray-400 hover:text-red-500 transition-colors md:ml-2">
+                      {/* <button className="text-gray-400 hover:text-red-500 transition-colors md:ml-2">
                         <Heart className="w-5 h-5" />
-                      </button>
+                      </button> */}
                     </div>
                   </div>
 

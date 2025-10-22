@@ -18,9 +18,12 @@ import {
   SheetOverlay,
   SheetPortal,
   SheetClose,
+  SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import SearchModal from "@/components/search/SearchModal";
+import { Instagram, Facebook, Youtube } from "lucide-react";
 
 // Dropdown options configuration
 const dropdownOptions = [
@@ -144,7 +147,7 @@ export default function Header2() {
 
     const productListing: MegaMenuItem = {
       id: "product-listing",
-      label: "PRODUCT LISTING",
+      label: "ALL",
       href: "/listing",
       bold: true,
       subCategories: [],
@@ -301,14 +304,14 @@ export default function Header2() {
                 <Search className="w-5 h-5" />
               </button>
 
-              <button className="relative hover:opacity-70 transition-opacity">
+              {/* <button className="relative hover:opacity-70 transition-opacity">
                 <Heart className="w-5 h-5" />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 )}
-              </button>
+              </button> */}
 
               <button
                 onClick={() => {
@@ -338,22 +341,14 @@ export default function Header2() {
 
         {/* Mobile Action Icons */}
         <div className="flex items-center gap-3 lg:hidden">
-          <button
-            onClick={() => setIsSearchOpen(true)}
-            className="hover:opacity-70 transition-opacity"
-            aria-label="Search"
-          >
-            <Search className="w-5 h-5" />
-          </button>
-
-          <button className="relative hover:opacity-70 transition-opacity">
+          {/* <button className="relative hover:opacity-70 transition-opacity">
             <Heart className="w-5 h-5" />
             {wishlistCount > 0 && (
               <span className="absolute -top-2 -right-2 w-4 h-4 bg-black text-white text-xs rounded-full flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
-          </button>
+          </button> */}
 
           <button
             onClick={() => {
@@ -380,29 +375,40 @@ export default function Header2() {
         </div>
       </div>
 
+      {/* Mobile Search Bar - Below Header */}
+      <div className="lg:hidden px-4 pb-3">
+        <button
+          onClick={() => setIsSearchOpen(true)}
+          className="w-full flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors"
+          aria-label="Search"
+        >
+          <Search className="w-4 h-4 text-gray-500" />
+          <span className="text-sm text-gray-500">
+            {siteConfig.searchPlaceholder}
+          </span>
+        </button>
+      </div>
+
       {/* Mobile Sidebar Menu */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetPortal>
           <SheetOverlay className="fixed inset-0 bg-black/50 z-50" />
           <SheetContent
-            className="fixed top-0 left-0 h-full w-[280px] bg-white shadow-xl z-50 overflow-y-auto"
+            className="fixed top-0 left-0 h-full w-[320px] p-2 bg-red-400 bg-white shadow-xl z-50 overflow-y-auto flex flex-col"
             side="left"
           >
             {/* Mobile Menu Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h2 className="text-xl font-semibold">{siteConfig.siteName}</h2>
-              <SheetClose asChild>
-                <button
-                  className="hover:opacity-70 transition-opacity"
-                  aria-label="Close menu"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </SheetClose>
+              <SheetTitle className="text-xl font-semibold">
+                {siteConfig.siteName}
+              </SheetTitle>
+              <SheetDescription className="sr-only">
+                Navigation menu
+              </SheetDescription>
             </div>
 
-            {/* Mobile Navigation */}
-            <nav className="flex flex-col p-4">
+            {/* Mobile Navigation - Scrollable */}
+            <nav className="flex flex-col p-2 flex-1 overflow-y-auto">
               {navigationItems.map((item, index) => (
                 <div key={index} className="border-b border-gray-100">
                   {item.subCategories && item.subCategories.length > 0 ? (
@@ -461,7 +467,7 @@ export default function Header2() {
               ))}
 
               {/* Mobile Dropdown Options */}
-              <div className="mt-4 space-y-2">
+              {/* <div className="mt-4 space-y-2">
                 {dropdownOptions.map((dropdown, index) => (
                   <div key={index} className="border-b border-gray-100">
                     <button
@@ -479,8 +485,54 @@ export default function Header2() {
                     </button>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </nav>
+
+            {/* Bottom Section - Login Button & Social Icons */}
+            <div className="border-t border-gray-200  p-2 space-y-4 mt-auto">
+              {/* Login Button */}
+              <button
+                onClick={() => {
+                  window.location.href = "/auth/login";
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                Login
+              </button>
+
+              {/* Social Icons */}
+              <div className="flex items-center justify-center gap-4 pt-2">
+                <a
+                  href={storeSettings?.instagramUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5 text-gray-700" />
+                </a>
+                <a
+                  href={storeSettings?.facebookUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5 text-gray-700" />
+                </a>
+                <a
+                  href={storeSettings?.youtubeUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  aria-label="Youtube"
+                >
+                  <Youtube className="w-5 h-5 text-gray-700" />
+                </a>
+              </div>
+            </div>
           </SheetContent>
         </SheetPortal>
       </Sheet>

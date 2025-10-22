@@ -53,21 +53,23 @@ export default function ProductCard({
         </h3>
 
         {/* Price Row */}
-        <div className="flex items-center justify-between gap-2">
-          {/* Price section */}
-          <p className="text-sm sm:text-base md:text-lg font-bold whitespace-nowrap">
-            ₹{sellingPrice.toFixed(2)}
-            {mrp && mrp > sellingPrice && (
-              <>
-                <span className="ml-2 text-xs sm:text-sm text-gray-500 line-through font-normal">
-                  ₹{mrp.toFixed(2)}
-                </span>
-                <span className="ml-2 text-xs sm:text-sm text-green-600 font-semibold">
-                  ({Math.round(((mrp - sellingPrice) / mrp) * 100)}% OFF)
-                </span>
-              </>
-            )}
+        <div className="flex flex-col gap-1">
+          {/* Selling Price */}
+          <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+            ₹{sellingPrice.toLocaleString("en-IN")}
           </p>
+
+          {/* MRP and Discount */}
+          {mrp && mrp > sellingPrice && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm text-gray-500 line-through">
+                ₹{mrp.toLocaleString("en-IN")}
+              </span>
+              <span className="text-xs sm:text-sm text-green-600 font-semibold">
+                {Math.round(((mrp - sellingPrice) / mrp) * 100)}% OFF
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

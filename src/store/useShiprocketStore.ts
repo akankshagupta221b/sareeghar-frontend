@@ -101,7 +101,7 @@ export const useShiprocketStore = create<ShiprocketStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.post(
-        `${API_ROUTES.SHIPROCKET}/courier/best`,
+        `${API_ROUTES.SHIPROCKET}/best`,
         params
       );
 

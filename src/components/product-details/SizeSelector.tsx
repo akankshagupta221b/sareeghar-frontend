@@ -53,11 +53,11 @@ export default function SizeSelector({
       </div>
 
       {/* Dimensional Grid Link */}
-      <div className="text-right mt-2">
+      {/* <div className="text-right mt-2">
         <button className="text-xs sm:text-sm text-gray-500 hover:text-gray-700 uppercase tracking-wide hover:underline">
           Size Guide
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

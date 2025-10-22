@@ -33,11 +33,6 @@ const menuItems = [
     label: "MY REVIEWS",
     count: "reviewsCount",
   },
-  {
-    id: "wishlist",
-    label: "MY WISHLIST",
-    count: "wishlistCount",
-  },
 ] as const;
 
 const externalLinks = [

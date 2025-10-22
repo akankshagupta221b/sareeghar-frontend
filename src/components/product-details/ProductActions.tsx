@@ -42,8 +42,8 @@ export default function ProductActions({
 
       {/* Resend Date */}
       <button className="w-full flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-500 hover:text-gray-700 py-1.5 sm:py-2 transition-colors text-center">
-        <Calendar className="w-4 h-4" />
-        <span className="hidden xs:inline">WILL YOU RESEND IT ON THE SELECTED DATE?</span>
+        {/* <Calendar className="w-4 h-4" /> */}
+        {/* <span className="hidden xs:inline">WILL YOU RESEND IT ON THE SELECTED DATE?</span> */}
         <span className="xs:hidden">RESEND ON SELECTED DATE?</span>
       </button>
 

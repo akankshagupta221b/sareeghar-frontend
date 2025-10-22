@@ -31,7 +31,6 @@ export const useBrandStore = create<BrandsStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await axiosInstance.get(`${API_ROUTES.BRANDS}/`);
-
       set({ brands: response.data.data.brands, isLoading: false });
     } catch (e) {
       set({ isLoading: false, error: "Failed to fetch brands" });

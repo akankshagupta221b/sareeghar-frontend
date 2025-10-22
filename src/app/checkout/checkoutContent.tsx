@@ -26,9 +26,8 @@ function CheckoutContent() {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [showPaymentFlow, setShowPaymentFlow] = useState(false);
   const [checkoutEmail, setCheckoutEmail] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
-    "paypal" | "razorpay"
-  >("paypal");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<"razorpay">("razorpay");
   const [cartItemsWithDetails, setCartItemsWithDetails] = useState<
     (CartItem & { product: any })[]
   >([]);
@@ -278,19 +277,19 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr,500px] gap-12">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr,450px] xl:grid-cols-[1fr,500px] gap-6 md:gap-8 lg:gap-12">
       {/* Left Section - Shipping & Payment */}
-      <div className="bg-white p-8 rounded-lg shadow-sm">
+      <div className="bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-sm">
         {/* Delivery Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold mb-6 uppercase tracking-wide">
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 uppercase tracking-wide">
             SHIPPING
           </h2>
           <div className="space-y-4">
             {addresses.map((address) => (
               <label
                 key={address.id}
-                className="flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
+                className="flex items-start p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
                 style={{
                   borderColor:
                     selectedAddress === address.id ? "#581c87" : "#d1d5db",
@@ -304,9 +303,9 @@ function CheckoutContent() {
                   onCheckedChange={() => setSelectedAddress(address.id)}
                   className="mt-1"
                 />
-                <div className="flex-grow ml-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-base">
+                <div className="flex-grow ml-3 sm:ml-4">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="font-semibold text-sm sm:text-base">
                       {address.name}
                     </span>
                     {address.isDefault && (
@@ -315,13 +314,13 @@ function CheckoutContent() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-gray-700 mb-1">
+                  <div className="text-xs sm:text-sm text-gray-700 mb-1">
                     {address.address}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-xs sm:text-sm text-gray-600">
                     {address.city}, {address.country}, {address.postalCode}
                   </div>
-                  <div className="text-sm text-gray-600 mt-1">
+                  <div className="text-xs sm:text-sm text-gray-600 mt-1">
                     Phone: {address.phone}
                   </div>
                 </div>
@@ -330,69 +329,33 @@ function CheckoutContent() {
             <Button
               onClick={() => router.push("/account")}
               variant="outline"
-              className="w-full py-3 text-sm font-semibold uppercase tracking-wide"
+              className="w-full py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wide"
             >
               + Add a New Address
             </Button>
           </div>
         </div>
 
-        <Separator className="my-8" />
+        <Separator className="my-6 md:my-8" />
 
         {/* Payment Section */}
         {showPaymentFlow ? (
           <div>
-            <h2 className="text-3xl font-semibold mb-6 uppercase tracking-wide">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 uppercase tracking-wide">
               PAYMENT
             </h2>
-            <p className="mb-6 text-gray-600">
+            <p className="mb-4 sm:mb-6 text-sm sm:text-base text-gray-600">
               All transactions are secure and encrypted
             </p>
 
             {/* Payment Method Selection */}
-            <div className="mb-8">
-              <h3 className="text-lg font-medium mb-4 uppercase tracking-wide">
+            <div className="mb-6 md:mb-8">
+              <h3 className="text-base sm:text-lg font-medium mb-3 sm:mb-4 uppercase tracking-wide">
                 Select Payment Method
               </h3>
               <div className="space-y-3">
                 <label
-                  className="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
-                  style={{
-                    borderColor:
-                      selectedPaymentMethod === "paypal"
-                        ? "#581c87"
-                        : "#d1d5db",
-                    backgroundColor:
-                      selectedPaymentMethod === "paypal" ? "#faf5ff" : "white",
-                  }}
-                >
-                  <Checkbox
-                    id="paypal"
-                    checked={selectedPaymentMethod === "paypal"}
-                    onCheckedChange={() => setSelectedPaymentMethod("paypal")}
-                  />
-                  <div className="flex items-center gap-3 ml-3 flex-1">
-                    <div className="relative w-12 h-8 flex-shrink-0">
-                      <Image
-                        src={
-                          "https://upload.wikimedia.org/wikipedia/commons/a/a8/Paypal_Servise.jpg"
-                        }
-                        alt="Paypal"
-                        fill
-                        className="object-contain"
-                        priority
-                      />
-                    </div>
-                    <Label
-                      htmlFor="paypal"
-                      className="cursor-pointer font-medium"
-                    >
-                      PayPal / Credit Card
-                    </Label>
-                  </div>
-                </label>
-                <label
-                  className="flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
+                  className="flex items-center p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
                   style={{
                     borderColor:
                       selectedPaymentMethod === "razorpay"
@@ -409,8 +372,8 @@ function CheckoutContent() {
                     checked={selectedPaymentMethod === "razorpay"}
                     onCheckedChange={() => setSelectedPaymentMethod("razorpay")}
                   />
-                  <div className="flex items-center gap-3 ml-3 flex-1">
-                    <div className="relative w-12 h-8 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-3 ml-3 flex-1">
+                    <div className="relative w-10 h-7 sm:w-12 sm:h-8 flex-shrink-0">
                       <Image
                         src={
                           "https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg"
@@ -423,7 +386,7 @@ function CheckoutContent() {
                     </div>
                     <Label
                       htmlFor="razorpay"
-                      className="cursor-pointer font-medium"
+                      className="cursor-pointer font-medium text-sm sm:text-base"
                     >
                       Razorpay (UPI, Cards, Netbanking)
                     </Label>
@@ -431,45 +394,6 @@ function CheckoutContent() {
                 </label>
               </div>
             </div>
-
-            {/* PayPal Payment */}
-            {selectedPaymentMethod === "paypal" && (
-              <div className="mb-6">
-                <PayPalButtons
-                  style={{
-                    layout: "vertical",
-                    color: "black",
-                    shape: "rect",
-                    label: "pay",
-                  }}
-                  fundingSource="card"
-                  createOrder={async () => {
-                    const orderId = await createPayPalOrder(
-                      cartItemsWithDetails,
-                      total
-                    );
-
-                    if (orderId === null) {
-                      throw new Error("Failed to create paypal order");
-                    }
-
-                    return orderId;
-                  }}
-                  onApprove={async (data, actions) => {
-                    const captureData = await capturePayPalOrder(data.orderID);
-
-                    if (captureData) {
-                      await handleFinalOrderCreation(
-                        captureData,
-                        "CREDIT_CARD"
-                      );
-                    } else {
-                      alert("Failed to capture paypal order");
-                    }
-                  }}
-                />
-              </div>
-            )}
 
             {/* Razorpay Payment */}
             {selectedPaymentMethod === "razorpay" && (
@@ -494,17 +418,17 @@ function CheckoutContent() {
           </div>
         ) : (
           <div>
-            <h2 className="text-3xl font-semibold mb-6 uppercase ">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 uppercase ">
               GET STARTED
             </h2>
-            <p className="mb-4 text-gray-600">
+            <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-600">
               Enter your email to proceed with the purchase
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3"
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base"
                 value={checkoutEmail}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   setCheckoutEmail(event.target.value)
@@ -512,7 +436,7 @@ function CheckoutContent() {
               />
               <Button
                 onClick={handlePrePaymentFlow}
-                className="px-8 py-3 bg-primary hover:bg-secondary-foreground text-white font-semibold uppercase tracking-wide"
+                className="px-6 sm:px-8 py-2 sm:py-3 bg-primary hover:bg-secondary-foreground text-white font-semibold text-sm sm:text-base uppercase tracking-wide w-full sm:w-auto"
               >
                 Proceed
               </Button>
@@ -522,16 +446,16 @@ function CheckoutContent() {
       </div>
 
       {/* Right Section - Order Summary */}
-      <div className="bg-gray-900 text-white p-8 rounded-lg h-fit sticky top-6">
-        <h3 className="text-2xl font-bold mb-6 uppercase tracking-wide">
+      <div className="bg-gray-900 text-white p-4 sm:p-6 md:p-8 rounded-lg h-fit lg:sticky lg:top-6">
+        <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 sm:mb-6 uppercase tracking-wide">
           ORDER SUMMARY
         </h3>
 
         {/* Cart Items */}
-        <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
+        <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 max-h-64 overflow-y-auto">
           {cartItemsWithDetails.map((item) => (
-            <div key={item.id} className="flex gap-3">
-              <div className="relative w-16 h-20 rounded overflow-hidden flex-shrink-0 bg-gray-800">
+            <div key={item.id} className="flex gap-2 sm:gap-3">
+              <div className="relative w-12 h-16 sm:w-16 sm:h-20 rounded overflow-hidden flex-shrink-0 bg-gray-800">
                 <Image
                   src={item?.product?.images[0]}
                   alt={item?.product?.name}
@@ -541,35 +465,40 @@ function CheckoutContent() {
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-lg line-clamp-2 mb-1">
+                <h4 className="font-medium text-sm sm:text-base md:text-lg line-clamp-2 mb-1">
                   {item?.product?.name}
                 </h4>
-                <p className="text-base text-gray-400">
+                <p className="text-xs sm:text-sm text-gray-400">
                   {item.color} / {item.size}
                 </p>
-                <p className="text-base text-gray-400">Qty: {item.quantity}</p>
+                <p className="text-xs sm:text-sm text-gray-400">
+                  Qty: {item.quantity}
+                </p>
               </div>
-              <p className="font-semibold text-lg flex-shrink-0">
-                ₹ {(item?.product?.sellingPrice * item.quantity).toFixed(2)}
+              <p className="font-semibold text-sm sm:text-base md:text-lg flex-shrink-0">
+                ₹
+                {(item?.product?.sellingPrice * item.quantity).toLocaleString(
+                  "en-IN"
+                )}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-gray-700 pt-6 mb-6">
+        <div className="border-t border-gray-700 pt-4 sm:pt-6 mb-4 sm:mb-6">
           {/* Coupon Code */}
-          <div className="mb-6">
-            <div className="flex gap-2">
+          <div className="mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input
                 type="text"
                 placeholder="PROMO-CODE"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-600"
+                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 bg-gray-800 border border-gray-700 rounded text-xs sm:text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-gray-600"
               />
               <button
                 onClick={handleApplyCoupon}
-                className="px-6 py-3 bg-gray-800 border border-gray-700 rounded font-semibold text-sm hover:bg-gray-700 transition-colors uppercase tracking-wide"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-800 border border-gray-700 rounded font-semibold text-xs sm:text-sm hover:bg-gray-700 transition-colors uppercase tracking-wide w-full sm:w-auto"
               >
                 APPLY
               </button>
@@ -588,34 +517,38 @@ function CheckoutContent() {
           </div>
 
           {/* Price Breakdown */}
-          <div className="space-y-3 mb-6 text-xl">
+          <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 text-sm sm:text-base md:text-xl">
             <div className="flex items-center justify-between ">
-              <span className="uppercase tracking-wide text-gray-400">
+              <span className="uppercase tracking-wide text-gray-400 text-xs sm:text-sm md:text-base">
                 Subtotal
               </span>
-              <span className="font-semibold">₹ {subTotal.toFixed(2)}</span>
+              <span className="font-semibold">
+                ₹{subTotal.toLocaleString("en-IN")}
+              </span>
             </div>
             {appliedCoupon && (
-              <div className="flex items-center justify-between text-sm text-green-400">
+              <div className="flex items-center justify-between text-xs sm:text-sm text-green-400">
                 <span className="uppercase tracking-wide">
                   Discount ({appliedCoupon.discountPercent}%)
                 </span>
                 <span className="font-semibold">
-                  -₹ {discountAmount.toFixed(2)}
+                  -₹{discountAmount.toLocaleString("en-IN")}
                 </span>
               </div>
             )}
-            <div className="flex items-center text-xl justify-between">
-              <span className="uppercase tracking-wide text-gray-400">
+            <div className="flex items-center text-sm sm:text-base md:text-xl justify-between">
+              <span className="uppercase tracking-wide text-gray-400 text-xs sm:text-sm md:text-base">
                 Delivery Charges
               </span>
               {isLoadingDelivery ? (
                 <Skeleton className="h-4 w-16" />
               ) : !selectedAddress ? (
-                <span className="text-base text-gray-400">Select address</span>
+                <span className="text-xs sm:text-sm md:text-base text-gray-400">
+                  Select address
+                </span>
               ) : deliveryCharges > 0 ? (
                 <span className="font-semibold text-green-500">
-                  ₹ {deliveryCharges.toFixed(2)}
+                  ₹{deliveryCharges.toLocaleString("en-IN")}
                 </span>
               ) : (
                 <span className="font-semibold text-green-400">FREE</span>
@@ -627,18 +560,22 @@ function CheckoutContent() {
           </div>
 
           {/* Total */}
-          <div className="text-right mb-6 pt-4 border-t border-gray-700">
-            <div className="flex items-baseline justify-end gap-2">
-              <span className="text-5xl font-bold">{total.toFixed(2)}</span>
-              <span className="text-2xl text-gray-400">₹</span>
+          <div className="text-right mb-4 sm:mb-6 pt-3 sm:pt-4 border-t border-gray-700">
+            <div className="flex items-baseline justify-end gap-1 sm:gap-2">
+              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+                {total.toLocaleString("en-IN")}
+              </span>
+              <span className="text-lg sm:text-xl md:text-2xl text-gray-400">
+                ₹
+              </span>
             </div>
           </div>
         </div>
 
         {/* Security Badge */}
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-400 pt-4 border-t border-gray-700">
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-400 pt-3 sm:pt-4 border-t border-gray-700">
           <svg
-            className="w-4 h-4"
+            className="w-3 h-3 sm:w-4 sm:h-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

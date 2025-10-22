@@ -47,12 +47,12 @@ export default function CheckoutForms() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
         {/* Tab Navigation */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-2 sm:gap-4 mb-6 sm:mb-8">
           <button
             onClick={() => setActiveStep("shipping")}
-            className={`px-6 py-2 font-semibold text-sm rounded-t-lg transition-colors ${
+            className={`px-4 sm:px-6 py-2 font-semibold text-xs sm:text-sm rounded-t-lg transition-colors ${
               activeStep === "shipping"
                 ? "bg-white text-black border-b-2 border-black"
                 : "text-gray-400 hover:text-gray-600"
@@ -62,7 +62,7 @@ export default function CheckoutForms() {
           </button>
           <button
             onClick={() => setActiveStep("payment")}
-            className={`px-6 py-2 font-semibold text-sm rounded-t-lg transition-colors ${
+            className={`px-4 sm:px-6 py-2 font-semibold text-xs sm:text-sm rounded-t-lg transition-colors ${
               activeStep === "payment"
                 ? "bg-white text-black border-b-2 border-black"
                 : "text-gray-400 hover:text-gray-600"
@@ -72,31 +72,35 @@ export default function CheckoutForms() {
           </button>
         </div>
 
-        <div className="grid lg:grid-cols-[1fr,400px] gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-6 md:gap-8 lg:gap-12">
           {/* Left Section - Forms */}
           <div className="bg-white">
             {activeStep === "shipping" ? (
               /* SHIPPING FORM */
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-8">SHIPPING</h2>
+              <div className="p-4 sm:p-6 md:p-8">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+                  SHIPPING
+                </h2>
 
                 {/* Shipping Method */}
-                <div className="flex gap-4 mb-8">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
                   <button
                     onClick={() => setShippingMethod("standard")}
-                    className={`flex-1 p-4 border-2 rounded-lg transition-all ${
+                    className={`flex-1 p-3 sm:p-4 border-2 rounded-lg transition-all ${
                       shippingMethod === "standard"
                         ? "border-purple-900 bg-purple-900 text-white"
                         : "border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold">Standard</span>
+                      <span className="font-semibold text-sm sm:text-base">
+                        Standard
+                      </span>
                       {shippingMethod === "standard" && (
-                        <Check className="w-5 h-5" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span
                         className={
                           shippingMethod === "standard"
@@ -112,19 +116,21 @@ export default function CheckoutForms() {
 
                   <button
                     onClick={() => setShippingMethod("express")}
-                    className={`flex-1 p-4 border-2 rounded-lg transition-all ${
+                    className={`flex-1 p-3 sm:p-4 border-2 rounded-lg transition-all ${
                       shippingMethod === "express"
                         ? "border-purple-900 bg-purple-900 text-white"
                         : "border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold">Express</span>
+                      <span className="font-semibold text-sm sm:text-base">
+                        Express
+                      </span>
                       {shippingMethod === "express" && (
-                        <Check className="w-5 h-5" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center justify-between text-xs sm:text-sm">
                       <span
                         className={
                           shippingMethod === "express"
@@ -140,7 +146,7 @@ export default function CheckoutForms() {
                 </div>
 
                 {/* Address Form */}
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <input
                     type="text"
                     placeholder="St. Stalowa na Nekteen"
@@ -148,10 +154,10 @@ export default function CheckoutForms() {
                     onChange={(e) =>
                       handleShippingChange("street", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                   />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
                       placeholder="Country"
@@ -159,7 +165,7 @@ export default function CheckoutForms() {
                       onChange={(e) =>
                         handleShippingChange("country", e.target.value)
                       }
-                      className="px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                      className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                     />
                     <input
                       type="text"
@@ -168,11 +174,11 @@ export default function CheckoutForms() {
                       onChange={(e) =>
                         handleShippingChange("aptSuit", e.target.value)
                       }
-                      className="px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                      className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
                       placeholder="Zip code"
@@ -180,7 +186,7 @@ export default function CheckoutForms() {
                       onChange={(e) =>
                         handleShippingChange("zipcode", e.target.value)
                       }
-                      className="px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                      className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                     />
                     <input
                       type="text"
@@ -189,7 +195,7 @@ export default function CheckoutForms() {
                       onChange={(e) =>
                         handleShippingChange("city", e.target.value)
                       }
-                      className="px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                      className="px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                     />
                   </div>
 
@@ -200,14 +206,16 @@ export default function CheckoutForms() {
                     onChange={(e) =>
                       handleShippingChange("state", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-gray-300 rounded text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded text-xs sm:text-sm placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
                   />
                 </div>
               </div>
             ) : (
               /* PAYMENT FORM */
-              <div className="p-8">
-                <h2 className="text-3xl font-bold mb-8">PAYMENT</h2>
+              <div className="p-4 sm:p-6 md:p-8">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+                  PAYMENT
+                </h2>
 
                 {/* Email */}
                 <div className="space-y-4 mb-6">
@@ -359,32 +367,32 @@ export default function CheckoutForms() {
           </div>
 
           {/* Right Section - Order Summary (Same for both) */}
-          <div className="bg-gray-900 text-white p-8 rounded-lg h-fit sticky top-6">
-            <h3 className="text-lg font-semibold mb-6 uppercase tracking-wide">
+          <div className="bg-gray-900 text-white p-4 sm:p-6 md:p-8 rounded-lg h-fit lg:sticky lg:top-6">
+            <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 uppercase tracking-wide">
               TOTAL
             </h3>
 
-            <div className="space-y-4 mb-6">
-              <div className="flex items-center justify-between text-sm">
+            <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <span className="uppercase tracking-wide">
                     DELIVERY 3-4 B.D
                   </span>
-                  <HelpCircle className="w-4 h-4 text-gray-400" />
+                  <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
                 </div>
                 <span className="font-semibold">FREE</span>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <span className="uppercase tracking-wide">VAT +9%</span>
-                  <HelpCircle className="w-4 h-4 text-gray-400" />
+                  <HelpCircle className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
                 </div>
                 <span className="font-semibold">{vatAmount.toFixed(2)}$</span>
               </div>
 
-              <div className="flex items-center justify-between text-sm pb-6 border-b border-gray-700">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between text-xs sm:text-sm pb-4 sm:pb-6 border-b border-gray-700">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="uppercase tracking-wide">DISCONT</span>
                   <span className="px-2 py-0.5 bg-pink-600 text-white text-xs rounded uppercase">
                     FIRSTUKI10
@@ -394,17 +402,19 @@ export default function CheckoutForms() {
               </div>
             </div>
 
-            <div className="text-right mb-8">
-              <span className="text-5xl font-bold">{total.toFixed(2)}</span>
-              <span className="text-2xl text-gray-400"> $</span>
+            <div className="text-right mb-6 sm:mb-8">
+              <span className="text-3xl sm:text-4xl md:text-5xl font-bold">
+                {total.toFixed(2)}
+              </span>
+              <span className="text-xl sm:text-2xl text-gray-400"> $</span>
             </div>
 
-            <button className="w-full py-4 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors uppercase tracking-wide mb-4">
+            <button className="w-full py-3 sm:py-4 bg-white text-gray-900 font-semibold text-sm sm:text-base rounded-lg hover:bg-gray-100 transition-colors uppercase tracking-wide mb-3 sm:mb-4">
               COMPLETE PURCHASE
             </button>
 
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
-              <Lock className="w-4 h-4" />
+            <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-400">
+              <Lock className="w-3 h-3 sm:w-4 sm:h-4" />
               PAYMENT SECURITY SSL
             </div>
           </div>

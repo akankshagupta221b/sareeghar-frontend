@@ -57,7 +57,7 @@ export default function ProductHeader({
         </div>
       </div>
 
-      <button
+      {/* <button
         onClick={handleFavoriteClick}
         className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors"
         aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
@@ -67,7 +67,7 @@ export default function ProductHeader({
             isFavorite ? "fill-red-500 text-red-500" : "text-gray-400"
           }`}
         />
-      </button>
+      </button> */}
     </div>
   );
 }

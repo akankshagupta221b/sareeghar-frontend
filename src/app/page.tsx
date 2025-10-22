@@ -163,105 +163,112 @@ function HomePage() {
       </section>
 
       {/* Brands section */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      {brands.length > 0 && (
+        <section className="py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+          {/* Decorative Background Elements */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <div className="inline-block mb-4">
-              <span className="text-xs md:text-sm uppercase tracking-[0.3em] font-semibold text-primary">
-                OUR PARTNERS
-              </span>
+          <div className="container mx-auto px-4 relative z-10">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="inline-block mb-4">
+                <span className="text-xs md:text-sm uppercase tracking-[0.3em] font-semibold text-primary">
+                  OUR PARTNERS
+                </span>
+              </div>
+              <h2 className="text-4xl font-secondary md:text-5xl font-bold mb-4 text-gray-900">
+                FEATURED BRANDS
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Discover premium quality from the world's most trusted brands
+              </p>
             </div>
-            <h2 className="text-4xl font-secondary md:text-5xl font-bold mb-4 text-gray-900">
-              FEATURED BRANDS
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover premium quality from the world's most trusted brands
-            </p>
-          </div>
 
-          {/* Brands Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {brands
-              .filter((brand) => brand.isActive)
-              .map((brand) => (
-                <div
-                  key={brand.id}
-                  className="group relative bg-white rounded-sm hover:shadow-2xl transition-all duration-500 overflow-hidden "
-                >
-                  {/* Brand Logo Container */}
-                  <div className="h-96 flex items-center justify-center bg-gradient-to-br from-white to-gray-50 group-hover:from-gray-50 group-hover:to-white transition-all duration-500">
-                    <Image
-                      src={brand.logo}
-                      alt={brand.name}
-                      className="max-w-full max-h-full object-fill transition-all duration-500 group-hover:scale-110"
-                    />
-                  </div>
+            {/* Brands Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {brands
+                .filter((brand) => brand.isActive)
+                .map((brand) => (
+                  <div
+                    key={brand.id}
+                    className="group relative bg-white rounded-sm shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden "
+                  >
+                    {/* Brand Logo Container */}
+                    <div className="h-96 flex items-center justify-center bg-gradient-to-br from-white to-gray-50 group-hover:from-gray-50 group-hover:to-white transition-all duration-500">
+                      <Image
+                        src={
+                          brand.logo != null
+                            ? brand.logo
+                            : "/logo/saree-ghar-2.png"
+                        }
+                        width={300}
+                        height={300}
+                        alt={brand.name}
+                        className="max-w-full max-h-full object-fill transition-all duration-500 group-hover:scale-110"
+                      />
+                    </div>
 
-                  {/* Brand Info Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end">
-                    <div className="p-6 w-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
-                        {brand.name}
-                      </h3>
-                      <p className="text-sm text-gray-200 mb-4 line-clamp-2">
-                        {brand.description || "Explore our collection"}
-                      </p>
-                      <Button
-                        onClick={() => {
-                          window.location.href = `/listing?brand=${brand.name}`;
-                        }}
-                        size="sm"
-                        className="w-full bg-white text-black hover:bg-gray-100 rounded-full font-semibold transition-all duration-300 hover:scale-105"
-                      >
-                        SHOP NOW
-                      </Button>
+                    {/* Brand Info Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end">
+                      <div className="p-6 w-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
+                          {brand.name}
+                        </h3>
+                        <p className="text-sm text-gray-200 mb-4 line-clamp-2">
+                          {brand.description || "Explore our collection"}
+                        </p>
+                        <Button
+                          onClick={() => {
+                            window.location.href = `/listing?brand=${brand.name}`;
+                          }}
+                          size="sm"
+                          className="w-full bg-white text-black hover:bg-gray-100 rounded-full font-semibold transition-all duration-300 hover:scale-105"
+                        >
+                          SHOP NOW
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Corner Badge */}
+                    <div className="absolute top-3 right-3 bg-primary/10 backdrop-blur-sm px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="text-xs font-semibold text-primary">
+                        Featured
+                      </span>
                     </div>
                   </div>
-
-                  {/* Corner Badge */}
-                  <div className="absolute top-3 right-3 bg-primary/10 backdrop-blur-sm px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-xs font-semibold text-primary">
-                      Featured
-                    </span>
-                  </div>
-                </div>
-              ))}
-          </div>
-
-          {/* View All Brands Button */}
-          {brands.length > 6 && (
-            <div className="text-center mt-12">
-              <Button
-                onClick={() => (window.location.href = "/brands")}
-                variant="outline"
-                className="px-8 py-6 text-base font-semibold rounded-full border-2 border-gray-300 hover:border-primary hover:text-primary transition-all duration-300 hover:scale-105"
-              >
-                VIEW ALL BRANDS
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5 ml-2 inline-block"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Button>
+                ))}
             </div>
-          )}
-        </div>
-      </section>
 
+            {/* View All Brands Button */}
+            {brands.length > 6 && (
+              <div className="text-center mt-12">
+                <Button
+                  onClick={() => (window.location.href = "/brands")}
+                  variant="outline"
+                  className="px-8 py-6 text-base font-semibold rounded-full border-2 border-gray-300 hover:border-primary hover:text-primary transition-all duration-300 hover:scale-105"
+                >
+                  VIEW ALL BRANDS
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-5 h-5 ml-2 inline-block"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
       {/* Collection section - Shows single featured collection */}
       {featuredCollection && (
         <DressCollection
