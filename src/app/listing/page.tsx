@@ -36,6 +36,7 @@ const listingConfig = {
 function ProductListingContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search");
+  const categoriesParam = searchParams.get("categories");
 
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -44,6 +45,7 @@ function ProductListingContent() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const {
     products,
@@ -77,6 +79,26 @@ function ProductListingContent() {
     error: errorCategories,
     fetchCategories,
   } = useCategoryStore();
+
+  // Initialize categories from URL params
+  useEffect(() => {
+    const initializeFilters = () => {
+      if (categoriesParam && categories.length > 0 && !isInitialized) {
+        // Split by comma and trim whitespace
+        const categoryNames = categoriesParam
+          .split(",")
+          .map((cat) => decodeURIComponent(cat.trim()))
+          .filter((cat) => cat.length > 0);
+
+        setSelectedCategories(categoryNames);
+        setIsInitialized(true);
+      } else if (!categoriesParam && !isInitialized) {
+        setIsInitialized(true);
+      }
+    };
+
+    initializeFilters();
+  }, [categoriesParam, categories, isInitialized]);
 
   const fetchAllProducts = () => {
     // If there's a search query, use search API instead
@@ -196,9 +218,16 @@ function ProductListingContent() {
   const displayProducts = searchQuery ? searchResults.products : products;
   const displayLoading = searchQuery ? isSearchLoading : isLoading;
   const displayError = searchQuery ? searchError : error;
-  const pageTitle = searchQuery
-    ? `Search Results for "${searchQuery}"`
-    : listingConfig.pageTitle;
+
+  // Create dynamic page title
+  let pageTitle = listingConfig.pageTitle;
+  if (searchQuery && categoriesParam) {
+    pageTitle = `Search Results for "${searchQuery}" in ${categoriesParam}`;
+  } else if (searchQuery) {
+    pageTitle = `Search Results for "${searchQuery}"`;
+  } else if (categoriesParam) {
+    pageTitle = categoriesParam;
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -215,8 +244,8 @@ function ProductListingContent() {
             </p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 w-full sm:w-auto">
-            {/* Clear Search Button */}
-            {searchQuery && (
+            {/* Clear Filters Button - Show when there are URL params */}
+            {(searchQuery || categoriesParam) && (
               <Button
                 variant="outline"
                 size="sm"
@@ -226,7 +255,7 @@ function ProductListingContent() {
                 className="flex items-center gap-2"
               >
                 <X className="h-4 w-4" />
-                Clear Search
+                Clear Filters
               </Button>
             )}
 
