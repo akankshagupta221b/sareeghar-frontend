@@ -32,7 +32,7 @@ export default function ProductCard({
       className="bg-white w-full group cursor-pointer"
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-2 sm:mb-3 md:mb-4 rounded-md">
+      <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-1.5 sm:mb-3 md:mb-4 rounded-sm sm:rounded-md">
         <Image
           src={image}
           alt={name}
@@ -43,29 +43,31 @@ export default function ProductCard({
       </div>
 
       {/* Product Info */}
-      <div className="space-y-1 sm:space-y-2">
-        {/* Category */}
-        <p className="text-xs sm:text-sm text-gray-500">{category}</p>
+      <div className="space-y-0.5 sm:space-y-2">
+        {/* Category - Hidden on mobile to save space */}
+        <p className="hidden sm:block text-xs sm:text-sm text-gray-500">
+          {category}
+        </p>
 
         {/* Brand/Product Name */}
-        <h3 className="text-sm sm:text-base md:text-lg lg:text-xl font-medium tracking-wide line-clamp-2">
+        <h3 className="text-xs sm:text-base md:text-lg lg:text-xl font-medium tracking-wide line-clamp-2 leading-tight sm:leading-normal">
           {name}
         </h3>
 
         {/* Price Row */}
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5 sm:gap-1">
           {/* Selling Price */}
-          <p className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+          <p className="text-sm sm:text-lg md:text-xl font-bold text-gray-900">
             ₹{sellingPrice.toLocaleString("en-IN")}
           </p>
 
           {/* MRP and Discount */}
           {mrp && mrp > sellingPrice && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs sm:text-sm text-gray-500 line-through">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className="text-[10px] sm:text-sm text-gray-500 line-through">
                 ₹{mrp.toLocaleString("en-IN")}
               </span>
-              <span className="text-xs sm:text-sm text-green-600 font-semibold">
+              <span className="text-[10px] sm:text-sm text-green-600 font-semibold">
                 {Math.round(((mrp - sellingPrice) / mrp) * 100)}% OFF
               </span>
             </div>

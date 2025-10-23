@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronRight, X } from "lucide-react";
+import { ChevronRight, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { sizes } from "@/utils/config";
 
@@ -66,6 +66,9 @@ export default function FilterSection({
     [key: string]: boolean;
   }>({});
 
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showAllBrands, setShowAllBrands] = useState(false);
+
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -102,6 +105,8 @@ export default function FilterSection({
     selectedItems,
     filterType,
     renderContent,
+    showAll,
+    onToggleShowAll,
   }: {
     label: string;
     filterKey: string;
@@ -109,6 +114,8 @@ export default function FilterSection({
     selectedItems: string[];
     filterType: "categories" | "sizes" | "brands" | "colors";
     renderContent?: () => React.ReactNode;
+    showAll?: boolean;
+    onToggleShowAll?: () => void;
   }) => {
     const isExpanded = expandedSections[filterKey];
     const hasValue = selectedItems.length > 0;
@@ -118,6 +125,11 @@ export default function FilterSection({
           ? selectedItems[0]
           : `${selectedItems.length} selected`
         : null;
+
+    const ITEMS_LIMIT = 10;
+    const shouldShowToggle = items && items.length > ITEMS_LIMIT;
+    const displayedItems =
+      shouldShowToggle && !showAll ? items.slice(0, ITEMS_LIMIT) : items;
 
     return (
       <div className="border-b border-gray-200 last:border-b-0">
@@ -161,21 +173,42 @@ export default function FilterSection({
               {renderContent ? (
                 renderContent()
               ) : (
-                <div className="space-y-2">
-                  {items?.map((option) => (
+                <>
+                  <div className="space-y-2">
+                    {displayedItems?.map((option) => (
+                      <button
+                        key={option}
+                        onClick={() => onToggleFilter(filterType, option)}
+                        className={`w-full text-left px-2 sm:px-3 py-2 text-xs sm:text-sm rounded hover:bg-gray-100 transition-colors ${
+                          selectedItems.includes(option)
+                            ? "bg-gray-100 font-medium"
+                            : ""
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+
+                  {shouldShowToggle && onToggleShowAll && (
                     <button
-                      key={option}
-                      onClick={() => onToggleFilter(filterType, option)}
-                      className={`w-full text-left px-2 sm:px-3 py-2 text-xs sm:text-sm rounded hover:bg-gray-100 transition-colors ${
-                        selectedItems.includes(option)
-                          ? "bg-gray-100 font-medium"
-                          : ""
-                      }`}
+                      onClick={onToggleShowAll}
+                      className="w-full mt-3 px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 font-medium flex items-center justify-center gap-1 hover:bg-gray-50 rounded transition-colors"
                     >
-                      {option}
+                      {showAll ? (
+                        <>
+                          <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4" />
+                          Show Less
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                          Show More ({items.length - ITEMS_LIMIT} more)
+                        </>
+                      )}
                     </button>
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -203,6 +236,8 @@ export default function FilterSection({
           items={categories.filter((c) => c.isActive).map((c) => c.name)}
           selectedItems={selectedCategories}
           filterType="categories"
+          showAll={showAllCategories}
+          onToggleShowAll={() => setShowAllCategories(!showAllCategories)}
         />
 
         <FilterItem
@@ -211,6 +246,8 @@ export default function FilterSection({
           items={brands.filter((b) => b.isActive).map((b) => b.name)}
           selectedItems={selectedBrands}
           filterType="brands"
+          showAll={showAllBrands}
+          onToggleShowAll={() => setShowAllBrands(!showAllBrands)}
         />
 
         <FilterItem

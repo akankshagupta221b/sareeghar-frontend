@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -14,6 +14,7 @@ export default function ProductImageGallery({
   productName,
 }: ProductImageGalleryProps) {
   const [currentImage, setCurrentImage] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % images.length);
@@ -22,6 +23,40 @@ export default function ProductImageGallery({
   const prevImage = () => {
     setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
   };
+
+  const openFullscreen = () => {
+    setIsFullscreen(true);
+  };
+
+  const closeFullscreen = () => {
+    setIsFullscreen(false);
+  };
+
+  // Handle ESC key to close fullscreen
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isFullscreen) {
+        closeFullscreen();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscKey);
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [isFullscreen]);
+
+  // Prevent body scroll when fullscreen is open
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isFullscreen]);
 
   const thumbnails = images.slice(0, 5);
 
@@ -40,7 +75,7 @@ export default function ProductImageGallery({
             <Image
               src={img}
               alt={`${productName} ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               width={400}
               height={300}
             />
@@ -49,14 +84,21 @@ export default function ProductImageGallery({
       </div>
 
       {/* Main Image */}
-      <div className="flex-1 relative bg-gray-100 rounded-md overflow-hidden aspect-[3/4]">
-        <Image
-          src={images[currentImage]}
-          alt={productName}
-          className="absolute inset-0 w-full h-full object-cover"
-          width={400}
-          height={300}
-        />
+      <div className="flex-1 relative bg-gray-100 rounded-md overflow-hidden aspect-[3/4] group">
+        <div onClick={openFullscreen} className="cursor-zoom-in w-full h-full">
+          <Image
+            src={images[currentImage]}
+            alt={productName}
+            className="absolute inset-0 w-full h-full object-contain p-2"
+            width={400}
+            height={300}
+          />
+        </div>
+
+        {/* Zoom In Icon Hint */}
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-black/60 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <ZoomIn className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+        </div>
 
         {/* Navigation Arrows */}
         {images.length > 1 && (
@@ -115,13 +157,92 @@ export default function ProductImageGallery({
             <Image
               src={img}
               alt={`${productName} ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               width={400}
               height={300}
             />
           </button>
         ))}
       </div>
+
+      {/* Fullscreen Modal */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+          {/* Close Button */}
+          <button
+            onClick={closeFullscreen}
+            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+            aria-label="Close fullscreen"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+
+          {/* ESC Key Hint */}
+          <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 text-white text-sm">
+            Press <kbd className="px-2 py-1 bg-white/20 rounded">ESC</kbd> to
+            close
+          </div>
+
+          {/* Image Counter */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm font-medium">
+            {currentImage + 1} / {images.length}
+          </div>
+
+          {/* Main Fullscreen Image */}
+          <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-8">
+            <Image
+              src={images[currentImage]}
+              alt={productName}
+              className="max-w-full max-h-full object-contain"
+              width={1200}
+              height={1600}
+            />
+          </div>
+
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6 text-white" />
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6 text-white" />
+              </button>
+            </>
+          )}
+
+          {/* Thumbnail Navigation */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto max-w-[90vw] pb-2">
+            {images.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImage(index)}
+                className={`min-w-[60px] w-[60px] h-[80px] border-2 overflow-hidden rounded-md transition-all ${
+                  currentImage === index
+                    ? "border-white scale-110"
+                    : "border-white/30 hover:border-white/60"
+                }`}
+              >
+                <Image
+                  src={img}
+                  alt={`${productName} ${index + 1}`}
+                  className="w-full h-full object-contain bg-white/10"
+                  width={60}
+                  height={80}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
