@@ -99,31 +99,36 @@ export default function Header2() {
             (cat) => cat.parentId === secondCat.id && cat.isActive
           );
 
-          // If no third level, create a single item from the second level category itself
-          const items =
-            thirdLevel.length > 0
-              ? thirdLevel.map((thirdCat) => ({
-                  id: thirdCat.id,
-                  label: thirdCat.name,
+          // If there are third-level categories, show them under the second-level title
+          // If not, just show the second-level category as a direct link without nesting
+          if (thirdLevel.length > 0) {
+            return {
+              id: secondCat.id,
+              title: secondCat.name,
+              items: thirdLevel.map((thirdCat) => ({
+                id: thirdCat.id,
+                label: thirdCat.name,
+                href: `/listing?categories=${encodeURIComponent(
+                  thirdCat.name
+                )}`,
+              })),
+            };
+          } else {
+            // No third level, so return the second-level category directly without a title
+            return {
+              id: secondCat.id,
+              title: "", // Empty title so we can render it differently
+              items: [
+                {
+                  id: secondCat.id,
+                  label: secondCat.name,
                   href: `/listing?categories=${encodeURIComponent(
-                    thirdCat.name
+                    secondCat.name
                   )}`,
-                }))
-              : [
-                  {
-                    id: secondCat.id,
-                    label: secondCat.name,
-                    href: `/listing?categories=${encodeURIComponent(
-                      secondCat.name
-                    )}`,
-                  },
-                ];
-
-          return {
-            id: secondCat.id,
-            title: secondCat.name,
-            items: items,
-          };
+                },
+              ],
+            };
+          }
         });
 
         return {
@@ -131,7 +136,7 @@ export default function Header2() {
           label: root.name.toUpperCase(),
           href: `/listing?categories=${encodeURIComponent(root.name)}`,
           bold: false,
-          subCategories: subCategories, // Don't filter, show all second-level categories
+          subCategories: subCategories,
         };
       });
     };
@@ -251,7 +256,7 @@ export default function Header2() {
                         <div className="bg-white shadow-xl border border-gray-200 overflow-hidden">
                           <div className="px-6 py-6 sm:px-8 sm:py-8">
                             <div
-                              className="grid gap-6 sm:gap-8"
+                              className="grid gap-3 sm:gap-4"
                               style={{
                                 gridTemplateColumns: `repeat(${Math.min(
                                   item.subCategories.length,
@@ -261,15 +266,21 @@ export default function Header2() {
                             >
                               {item.subCategories.map((subCat, subIndex) => (
                                 <div key={subIndex} className="min-w-0">
-                                  <h3 className="font-semibold text-xs text-gray-900 mb-3 sm:mb-4 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis">
-                                    {subCat.title}
-                                  </h3>
-                                  <ul className="space-y-2">
+                                  {subCat.title && (
+                                    <h3 className="font-semibold text-xs text-gray-900 mb-3 sm:mb-4 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis">
+                                      {subCat.title}
+                                    </h3>
+                                  )}
+                                  <ul
+                                    className={`space-y-2 ${
+                                      !subCat.title ? "mt-0" : ""
+                                    }`}
+                                  >
                                     {subCat.items.map((item, itemIndex) => (
                                       <li key={itemIndex}>
                                         <a
                                           href={item.href}
-                                          className="text-sm text-gray-600 hover:text-gray-900 hover:pl-2 transition-all duration-200 block whitespace-nowrap"
+                                          className="text-sm text-gray-600 line-clamp-1 hover:text-gray-900 hover:pl-2 transition-all duration-200 block whitespace-nowrap"
                                         >
                                           {item.label}
                                         </a>
@@ -437,10 +448,16 @@ export default function Header2() {
                         <div className="pb-3 space-y-4">
                           {item.subCategories.map((subCat, subIndex) => (
                             <div key={subIndex} className="pl-4">
-                              <h4 className="font-semibold text-xs text-gray-900 mb-2 tracking-wider">
-                                {subCat.title}
-                              </h4>
-                              <ul className="space-y-2">
+                              {subCat.title && (
+                                <h4 className="font-semibold text-xs text-gray-900 mb-2 tracking-wider">
+                                  {subCat.title}
+                                </h4>
+                              )}
+                              <ul
+                                className={`space-y-2 ${
+                                  !subCat.title ? "pl-0" : ""
+                                }`}
+                              >
                                 {subCat.items.map((subItem, itemIndex) => (
                                   <li key={itemIndex}>
                                     <a
