@@ -16,8 +16,8 @@ import { useSettingsStore } from "@/store/useSettingsStore";
 
 function LoginForm() {
   const [formData, setFormData] = useState({
-    email: "admin@gmail.com",
-    password: "123456",
+    email: "",
+    password: "",
   });
   const { toast } = useToast();
   const { login, isLoading } = useAuthStore();
