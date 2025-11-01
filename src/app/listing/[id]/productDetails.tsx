@@ -5,7 +5,6 @@ import {
   ProductActions,
   ProductHeader,
   ProductImageGallery,
-  ProductInfoPanel,
   QuantitySelector,
   SizeSelector,
 } from "@/components/product-details";
@@ -13,7 +12,6 @@ import { ProductReviews } from "@/components/reviews";
 import { useCartStore } from "@/store/useCartStore";
 import { useProductStore } from "@/store/useProductStore";
 import { useCategoryStore } from "@/store/useCategoryStore";
-import { useSearchStore } from "@/store/useSearchStore";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
@@ -237,11 +235,13 @@ function ProductDetailsContent({ id }: { id: string }) {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-5 sm:py-6 md:py-8">
         <div className="grid lg:grid-cols-2 gap-5 sm:gap-6 md:gap-8 lg:gap-12">
-          {/* Left - Images */}
-          <ProductImageGallery
-            images={product.images}
-            productName={product.name}
-          />
+          {/* Left - Images (Sticky) */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
+            <ProductImageGallery
+              images={product.images}
+              productName={product.name}
+            />
+          </div>
 
           {/* Right - Product Info */}
           <div className="space-y-4 sm:space-y-5 md:space-y-6">

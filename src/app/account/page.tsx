@@ -235,14 +235,14 @@ function UserAccountPage() {
         return (
           <div className="space-y-6 sm:space-y-8">
             <ProfileSection />
-            <DeliverySection
+            {/* <DeliverySection
               address={addresses[0] || null}
               isEditing={isEditingDelivery}
               onEdit={handleDeliveryEdit}
               onSave={handleDeliverySave}
               formData={deliveryFormData}
               onChange={handleDeliveryChange}
-            />
+            /> */}
           </div>
         );
       case "addresses":

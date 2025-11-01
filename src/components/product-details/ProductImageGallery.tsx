@@ -84,17 +84,17 @@ export default function ProductImageGallery({
       </div>
 
       {/* Main Image */}
-      <div className="flex-1 relative bg-gray-100 rounded-md overflow-hidden aspect-[3/4] group">
+      <div className="flex-1 relative bg-gray-100 rounded-md overflow-hidden group">
         <div
           onClick={openFullscreen}
-          className="cursor-zoom-in w-full h-full flex items-start justify-center pt-2"
+          className="cursor-zoom-in w-full flex items-start justify-center"
         >
           <Image
             src={images[currentImage]}
             alt={productName}
             className="w-full h-auto object-contain"
-            width={400}
-            height={300}
+            width={600}
+            height={800}
           />
         </div>
 

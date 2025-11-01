@@ -96,39 +96,6 @@ export default function ProductInfoPanel({
         {/* Product Details */}
         <div className="space-y-1 text-sm sm:text-base text-gray-700">
           <p>Composition: {composition}</p>
-          {productId && <p>Product ID: {productId}</p>}
-          {manufacturerCode && <p>Manufacturer code: {manufacturerCode}</p>}
-        </div>
-      </AccordionItem>
-
-      {/* Delivery Information Section */}
-      <AccordionItem title="Delivery Information" defaultOpen={false}>
-        <div className="space-y-4">
-          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-4">
-            {deliveryItems.map((item, index) => (
-              <div key={index} className="flex items-center gap-3">
-                {item.icon}
-                <div>
-                  <p className="font-semibold text-sm sm:text-base">{item.title}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">{item.subtitle}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="pt-3 border-t border-gray-200 text-xs sm:text-sm text-gray-600">
-            <p>• Standard delivery: 3-5 business days</p>
-            <p>• Express delivery available</p>
-            <p>• Free returns within 30 days</p>
-          </div>
-        </div>
-      </AccordionItem>
-
-      {/* Returns and Complaints Section */}
-      <AccordionItem title="Returns and Complaints" defaultOpen={false}>
-        <div className="space-y-2 sm:space-y-3 text-sm sm:text-base text-gray-700">
-          {returnInfo.map((info, index) => (
-            <p key={index}>{info}</p>
-          ))}
         </div>
       </AccordionItem>
     </div>
