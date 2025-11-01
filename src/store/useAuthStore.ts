@@ -68,13 +68,20 @@ export const useAuthStore = create<AuthStore>()(
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-          console.log("Attempting login for:", email);
           const response = await axiosInstance.post("/api/auth/login", {
             email,
             password,
           });
 
-          console.log("Login response: ", response);
+          // Check if the response indicates failure
+          if (response.data.success === false) {
+            const errorMessage = response.data.error || "Login failed";
+            set({
+              isLoading: false,
+              error: errorMessage,
+            });
+            return { success: false };
+          }
 
           const { accessToken, refreshToken, user } = response.data.data;
 

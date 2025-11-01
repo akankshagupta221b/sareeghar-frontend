@@ -19,6 +19,7 @@ function LoginForm() {
     email: "",
     password: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { login, isLoading, error } = useAuthStore();
   const { syncGuestCartWithServer } = useCartStore();
@@ -40,61 +41,74 @@ function LoginForm() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
-    const checkFirstLevelOfValidation = await protectSignInAction(
-      formData.email
-    );
+    try {
+      const checkFirstLevelOfValidation = await protectSignInAction(
+        formData.email
+      );
 
-    if (!checkFirstLevelOfValidation.success) {
-      toast({
-        title: checkFirstLevelOfValidation.error,
-        variant: "destructive",
-      });
-      return;
-    }
+      if (!checkFirstLevelOfValidation.success) {
+        toast({
+          title: checkFirstLevelOfValidation.error,
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-    const success = await login(formData.email, formData.password);
-    console.log("Login success:", success);
-    if (success.success && success.data) {
-      const { accessToken, refreshToken, user } = success.data;
+      const success = await login(formData.email, formData.password);
+      console.log("Login success:", success);
+      if (success.success && success.data) {
+        const { accessToken, refreshToken, user } = success.data;
 
-      // Store tokens in localStorage
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+        // Store tokens in localStorage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
 
-      // Set cookies using js-cookie
-      Cookies.set("accessToken", accessToken, {
-        expires: 1, // 1 day
-        secure: true,
-        sameSite: "none",
-      });
+        // Set cookies using js-cookie
+        Cookies.set("accessToken", accessToken, {
+          expires: 1, // 1 day
+          secure: true,
+          sameSite: "none",
+        });
 
-      Cookies.set("refreshToken", refreshToken, {
-        expires: 30, // 30 days
-        secure: true,
-        sameSite: "none",
-      });
+        Cookies.set("refreshToken", refreshToken, {
+          expires: 30, // 30 days
+          secure: true,
+          sameSite: "none",
+        });
 
-      console.log("✅ Cookies set successfully:", {
-        accessToken: Cookies.get("accessToken")?.substring(0, 20) + "...",
-        refreshToken: Cookies.get("refreshToken")?.substring(0, 20) + "...",
-      });
+        console.log("✅ Cookies set successfully:", {
+          accessToken: Cookies.get("accessToken")?.substring(0, 20) + "...",
+          refreshToken: Cookies.get("refreshToken")?.substring(0, 20) + "...",
+        });
 
-      // Sync guest cart with server
-      await syncGuestCartWithServer();
+        // Sync guest cart with server
+        await syncGuestCartWithServer();
 
-      toast({
-        title: "Login Successful!",
-        description: `Welcome back, ${user?.name || "User"}!`,
-      });
-      router.push(redirectPath);
-    } else {
-      // Use the error from the store if available
+        toast({
+          title: "Login Successful!",
+          description: `Welcome back, ${user?.name || "User"}!`,
+        });
+        router.push(redirectPath);
+      } else {
+        // Use the error from the store if available
+        toast({
+          title: "Login Failed",
+          description: error || "Invalid email or password",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
       toast({
         title: "Login Failed",
-        description: error || "Invalid email or password",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -260,10 +274,10 @@ function LoginForm() {
                 {/* Login Button */}
                 <Button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   className="w-full bg-gray-900 text-white font-semibold py-6 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 group"
                 >
-                  {isLoading ? (
+                  {isSubmitting ? (
                     "LOGGING IN..."
                   ) : (
                     <>
