@@ -23,7 +23,7 @@ const initialAddressFormState: AddressFormData = {
   name: "",
   address: "",
   city: "",
-  country: "",
+  country: "India",
   state: "",
   postalCode: "",
   phone: "",
@@ -43,7 +43,7 @@ function UserAccountPage() {
 
   const [deliveryFormData, setDeliveryFormData] = useState({
     address: "",
-    country: "",
+    country: "India",
     aptSuite: "",
     zipCode: "",
     city: "",
@@ -162,7 +162,7 @@ function UserAccountPage() {
       name: address.name,
       address: address.address,
       city: address.city,
-      country: address.country,
+      country: "India",
       state: address.state,
       phone: address.phone,
       postalCode: address.postalCode,
@@ -220,7 +220,7 @@ function UserAccountPage() {
     if (defaultAddress) {
       setDeliveryFormData({
         address: defaultAddress.address,
-        country: defaultAddress.country,
+        country: "India",
         aptSuite: "",
         zipCode: defaultAddress.postalCode,
         city: defaultAddress.city,

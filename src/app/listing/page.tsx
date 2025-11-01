@@ -16,7 +16,7 @@ import SortFilter from "@/components/listing/SortFilter";
 import { useProductStore } from "@/store/useProductStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import { SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useMemo } from "react";
 import { useBrandStore } from "@/store/useBrandStore";
 import { useCategoryStore } from "@/store/useCategoryStore";
 import { useSearchParams } from "next/navigation";
@@ -219,6 +219,21 @@ function ProductListingContent() {
   const displayLoading = searchQuery ? isSearchLoading : isLoading;
   const displayError = searchQuery ? searchError : error;
 
+  // Extract unique colors from all products
+  const availableColors = useMemo(() => {
+    const colorSet = new Set<string>();
+    displayProducts.forEach((product) => {
+      if (product.colors && Array.isArray(product.colors)) {
+        product.colors.forEach((color) => {
+          if (color && color.trim()) {
+            colorSet.add(color.trim());
+          }
+        });
+      }
+    });
+    return Array.from(colorSet).sort();
+  }, [displayProducts]);
+
   // Create dynamic page title
   let pageTitle = listingConfig.pageTitle;
   if (searchQuery && categoriesParam) {
@@ -283,6 +298,7 @@ function ProductListingContent() {
                   priceRange={priceRange}
                   brands={brands}
                   categories={categories}
+                  availableColors={availableColors}
                   onToggleFilter={handleToggleFilter}
                   onPriceRangeChange={setPriceRange}
                 />
@@ -311,6 +327,7 @@ function ProductListingContent() {
               priceRange={priceRange}
               brands={brands}
               categories={categories}
+              availableColors={availableColors}
               onToggleFilter={handleToggleFilter}
               onPriceRangeChange={setPriceRange}
             />

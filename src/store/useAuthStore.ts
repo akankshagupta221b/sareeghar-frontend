@@ -30,6 +30,13 @@ type AuthStore = {
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<Boolean>;
   checkAuth: () => void;
+  getProfile: () => Promise<User | null>;
+  updateProfile: (payload: Partial<{ name: string }>) => Promise<User | null>;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => Promise<{ success: boolean; message?: string }>;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -61,6 +68,7 @@ export const useAuthStore = create<AuthStore>()(
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
+          console.log("Attempting login for:", email);
           const response = await axiosInstance.post("/api/auth/login", {
             email,
             password,
@@ -139,6 +147,66 @@ export const useAuthStore = create<AuthStore>()(
         }
         if (refreshToken && !localStorage.getItem("refreshToken")) {
           localStorage.setItem("refreshToken", refreshToken);
+        }
+      },
+      getProfile: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axiosInstance.get("/api/users/profile");
+          const user = response?.data?.data || response?.data?.user || null;
+          set({ user, isLoading: false });
+          return user;
+        } catch (error: any) {
+          set({
+            isLoading: false,
+            error: error?.response?.data?.error || "Failed to fetch profile",
+          });
+          return null;
+        }
+      },
+      updateProfile: async (payload) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axiosInstance.put(
+            "/api/users/profile",
+            payload
+          );
+          const user = response?.data?.data || response?.data?.user || null;
+          if (user) set({ user, isLoading: false });
+          else set({ isLoading: false });
+          return user;
+        } catch (error: any) {
+          set({
+            isLoading: false,
+            error: error?.response?.data?.error || "Failed to update profile",
+          });
+          return null;
+        }
+      },
+      changePassword: async (currentPassword, newPassword, confirmPassword) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axiosInstance.put(
+            "/api/auth/change-password",
+            {
+              currentPassword,
+              newPassword,
+              confirmPassword,
+            }
+          );
+          const ok = response?.data?.success ?? response?.status === 200;
+          set({ isLoading: false });
+          return { success: !!ok, message: response?.data?.message };
+        } catch (error: any) {
+          set({
+            isLoading: false,
+            error: error?.response?.data?.error || "Failed to change password",
+          });
+          return {
+            success: false,
+            message:
+              error?.response?.data?.message || "Failed to change password",
+          };
         }
       },
     }),

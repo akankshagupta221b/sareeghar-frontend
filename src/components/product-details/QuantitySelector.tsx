@@ -50,6 +50,11 @@ export default function QuantitySelector({
         >
           +
         </button>
+        {max < 99 && (
+          <span className="text-xs sm:text-sm text-gray-500 ml-2">
+            (Max: {max})
+          </span>
+        )}
       </div>
     </div>
   );

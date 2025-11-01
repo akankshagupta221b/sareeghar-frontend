@@ -5,17 +5,82 @@ import { ChevronRight, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { sizes } from "@/utils/config";
 
-// Colors configuration
-const colors = [
-  { name: "Navy", value: "#0F172A" },
-  { name: "Yellow", value: "#FCD34D" },
-  { name: "White", value: "#FFFFFF" },
-  { name: "Orange", value: "#FB923C" },
-  { name: "Green", value: "#22C55E" },
-  { name: "Pink", value: "#EC4899" },
-  { name: "Cyan", value: "#06B6D4" },
-  { name: "Blue", value: "#3B82F6" },
-];
+// Colors configuration - map color names to hex values
+const colorMap: { [key: string]: string } = {
+  Navy: "#0F172A",
+  Yellow: "#FCD34D",
+  White: "#FFFFFF",
+  Orange: "#FB923C",
+  Green: "#22C55E",
+  Pink: "#EC4899",
+  Cyan: "#06B6D4",
+  Blue: "#3B82F6",
+  Red: "#EF4444",
+  Purple: "#A855F7",
+  Black: "#000000",
+  Gray: "#6B7280",
+  Brown: "#92400E",
+  Beige: "#D4C5B9",
+  Gold: "#FFD700",
+  Silver: "#C0C0C0",
+  Maroon: "#800000",
+  Olive: "#808000",
+  Teal: "#008080",
+  Lavender: "#E6E6FA",
+  Cream: "#FFFDD0",
+  Turquoise: "#40E0D0",
+  Mint: "#98FF98",
+  Coral: "#FF7F50",
+  Peach: "#FFE5B4",
+  Ivory: "#FFFFF0",
+  Burgundy: "#800020",
+  Indigo: "#4B0082",
+  Magenta: "#FF00FF",
+  Lime: "#00FF00",
+  Aqua: "#00FFFF",
+  Rose: "#FF007F",
+  Charcoal: "#36454F",
+  Tan: "#D2B48C",
+  Khaki: "#F0E68C",
+  Mauve: "#E0B0FF",
+  Plum: "#DDA0DD",
+  Saffron: "#F4C430",
+  Emerald: "#50C878",
+  Ruby: "#E0115F",
+  Sapphire: "#0F52BA",
+};
+
+// Helper function to check if a string is a valid hex color
+const isHexColor = (str: string): boolean => {
+  return /^#([0-9A-F]{3}){1,2}$/i.test(str);
+};
+
+// Helper function to get color value - if it's already a hex, return it; otherwise map it
+const getColorValue = (colorName: string): string => {
+  if (isHexColor(colorName)) {
+    return colorName;
+  }
+  return colorMap[colorName] || "#CCCCCC"; // Default to gray if not found
+};
+
+// Helper function to get a readable name from hex color
+const getColorName = (color: string): string => {
+  if (!isHexColor(color)) {
+    return color; // Already a name
+  }
+
+  // Try to find a matching name in our color map
+  const entry = Object.entries(colorMap).find(
+    ([_, hex]) => hex.toLowerCase() === color.toLowerCase()
+  );
+
+  if (entry) {
+    return entry[0];
+  }
+
+  // Return the hex code as the name if no match found
+  return color;
+};
 
 interface Brand {
   id: string;
@@ -44,6 +109,7 @@ interface FilterSectionProps {
   priceRange: number[];
   brands: Brand[];
   categories: Category[];
+  availableColors: string[];
   onToggleFilter: (
     filterType: "categories" | "sizes" | "brands" | "colors",
     value: string
@@ -59,6 +125,7 @@ export default function FilterSection({
   priceRange,
   brands,
   categories,
+  availableColors,
   onToggleFilter,
   onPriceRangeChange,
 }: FilterSectionProps) {
@@ -281,23 +348,31 @@ export default function FilterSection({
           filterType="colors"
           renderContent={() => (
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              {colors.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => onToggleFilter("colors", color.name)}
-                  className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 transition-all ${
-                    selectedColors.includes(color.name)
-                      ? "ring-2 ring-offset-2 ring-black border-black"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                  style={{ backgroundColor: color.value }}
-                  title={color.name}
-                >
-                  {color.name === "White" && (
-                    <span className="absolute inset-0 border border-gray-200 rounded-full" />
-                  )}
-                </button>
-              ))}
+              {availableColors.map((color) => {
+                const colorValue = getColorValue(color);
+                const colorName = getColorName(color);
+                const isWhite =
+                  colorValue.toLowerCase() === "#ffffff" ||
+                  colorName === "White";
+
+                return (
+                  <button
+                    key={color}
+                    onClick={() => onToggleFilter("colors", color)}
+                    className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 transition-all ${
+                      selectedColors.includes(color)
+                        ? "ring-2 ring-offset-2 ring-black border-black"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                    style={{ backgroundColor: colorValue }}
+                    title={colorName}
+                  >
+                    {isWhite && (
+                      <span className="absolute inset-0 border border-gray-200 rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           )}
         />

@@ -1,15 +1,17 @@
 "use client";
 
-import { Calendar } from "lucide-react";
+import { Calendar, ShoppingCart } from "lucide-react";
 import { HandBag02Icon } from "hugeicons-react";
 import DeliveryInfoPanel from "./DeliveryInfoPanel";
 import ProductInfoPanel from "./ProductInfoPanel";
+import { useRouter } from "next/navigation";
 
 interface ProductActionsProps {
   onAddToCart: () => void;
   isLoading?: boolean;
   disabled?: boolean;
   product: any;
+  isAddedToCart?: boolean;
 }
 
 // Product specifications
@@ -27,17 +29,33 @@ export default function ProductActions({
   isLoading = false,
   disabled = false,
   product,
+  isAddedToCart = false,
 }: ProductActionsProps) {
+  const router = useRouter();
+
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Add to Cart Button */}
       <button
         onClick={onAddToCart}
-        disabled={disabled || isLoading}
+        disabled={isLoading}
         className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
       >
         <HandBag02Icon className="w-5 h-5 sm:w-6 sm:h-6" />
-        {isLoading ? "Adding..." : "ADD TO CART"}
+        {isLoading
+          ? "Adding..."
+          : isAddedToCart
+          ? "PROCEED TO BUY"
+          : "ADD TO CART"}
+      </button>
+
+      {/* Go to Cart Button */}
+      <button
+        onClick={() => router.push("/cart")}
+        className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 transition-colors text-sm sm:text-base border border-gray-300"
+      >
+        <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+        GO TO CART
       </button>
 
       {/* Resend Date */}

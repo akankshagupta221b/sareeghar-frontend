@@ -36,6 +36,7 @@ function ProductDetailsContent({ id }: { id: string }) {
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(false);
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -158,17 +159,25 @@ function ProductDetailsContent({ id }: { id: string }) {
     fetchRelatedProducts();
   }, [product?.category, categories, id]);
 
-  const handleAddToCart = () => {
-    if (product) {
-      if (!selectedSize) {
-        toast({
-          title: "Please select a size",
-          variant: "destructive",
-        });
-        return;
-      }
+  const handleAddToCart = async () => {
+    if (!product) return;
 
-      addToCart({
+    // If already added to cart, proceed to buy (redirect to cart)
+    if (isAddedToCart) {
+      router.push("/cart");
+      return;
+    }
+
+    if (!selectedSize) {
+      toast({
+        title: "Please select a size",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await addToCart({
         productId: product.id,
         name: product.name,
         price: product.sellingPrice ? product.sellingPrice : product.price,
@@ -183,6 +192,15 @@ function ProductDetailsContent({ id }: { id: string }) {
       toast({
         title: "Product added to cart",
         description: `${quantity}x ${product.name} has been added to your cart.`,
+      });
+
+      // Set flag to change button text to "PROCEED TO BUY"
+      setIsAddedToCart(true);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      toast({
+        title: "Failed to add to cart",
+        variant: "destructive",
       });
     }
   };
@@ -253,19 +271,43 @@ function ProductDetailsContent({ id }: { id: string }) {
               onSizeSelect={setSelectedSize}
             />
 
+            {/* Stock Availability */}
+            <div className="py-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm font-medium uppercase tracking-wide">
+                  Availability:
+                </span>
+                <span
+                  className={`text-xs sm:text-sm font-semibold ${
+                    product.stock > 0
+                      ? product.stock <= 5
+                        ? "text-orange-600"
+                        : "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {product.stock > 0
+                    ? product.stock <= 5
+                      ? `Only ${product.stock} left in stock`
+                      : `${product.stock} in stock`
+                    : "Out of stock"}
+                </span>
+              </div>
+            </div>
+
             {/* Quantity Selection */}
             <QuantitySelector
               quantity={quantity}
               onQuantityChange={setQuantity}
               min={1}
-              max={10}
+              max={Math.min(product.stock, 10)}
             />
 
             {/* Add to Cart & Delivery Info */}
             <ProductActions
               onAddToCart={handleAddToCart}
-              disabled={!selectedSize}
               product={product}
+              isAddedToCart={isAddedToCart}
             />
           </div>
         </div>

@@ -20,7 +20,7 @@ function LoginForm() {
     password: "",
   });
   const { toast } = useToast();
-  const { login, isLoading } = useAuthStore();
+  const { login, isLoading, error } = useAuthStore();
   const { syncGuestCartWithServer } = useCartStore();
   const { storeSettings, fetchStoreSettings } = useSettingsStore();
   const router = useRouter();
@@ -54,6 +54,7 @@ function LoginForm() {
     }
 
     const success = await login(formData.email, formData.password);
+    console.log("Login success:", success);
     if (success.success && success.data) {
       const { accessToken, refreshToken, user } = success.data;
 
@@ -88,9 +89,10 @@ function LoginForm() {
       });
       router.push(redirectPath);
     } else {
+      // Use the error from the store if available
       toast({
         title: "Login Failed",
-        description: "Invalid email or password",
+        description: error || "Invalid email or password",
         variant: "destructive",
       });
     }

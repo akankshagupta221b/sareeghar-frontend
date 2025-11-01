@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -26,6 +27,7 @@ function UserCartPage() {
     removeFromCart,
   } = useCartStore();
   const { user } = useAuthStore();
+  const { toast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const router = useRouter();
@@ -35,8 +37,28 @@ function UserCartPage() {
   }, [fetchCart]);
 
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
+    const item = items.find((it) => it.id === id);
+    if (!item) return;
+
+    // Ensure at least 1
+    let qty = Math.max(1, newQuantity);
+
+    // If stock is defined on the item, clamp to stock
+    const stock = (item as any).stock;
+    if (typeof stock === "number") {
+      if (qty > stock) {
+        // Inform the user and clamp
+        toast({
+          title: "Cannot increase quantity",
+          description: `Only ${stock} in stock for ${item.name}`,
+          variant: "destructive",
+        });
+        qty = stock;
+      }
+    }
+
     setIsUpdating(true);
-    await updateCartItemQuantity(id, Math.max(1, newQuantity));
+    await updateCartItemQuantity(id, qty);
     setIsUpdating(false);
   };
 
@@ -154,27 +176,32 @@ function UserCartPage() {
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="rounded-md object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-[11px] xs:text-xs text-gray-500 mb-1">
-                        Saree
-                      </p>
-                      <h3 className="text-sm sm:text-base font-semibold mb-2 line-clamp-2">
-                        {item.name}
-                      </h3>
-                      <div
-                        className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm border border-gray-300"
-                        style={{ backgroundColor: item.color }}
-                        title={item.color}
-                      />
-                    </div>
+                    <Link
+                      href={`/listing/${item.productId}`}
+                      className="flex gap-3 sm:gap-4 items-center cursor-pointer hover:opacity-80 transition-opacity"
+                    >
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          className="rounded-md object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[11px] xs:text-xs text-gray-500 mb-1">
+                          Saree
+                        </p>
+                        <h3 className="text-sm sm:text-base font-semibold mb-2 line-clamp-2">
+                          {item.name}
+                        </h3>
+                        <div
+                          className="w-4 h-4 sm:w-5 sm:h-5 rounded-sm border border-gray-300"
+                          style={{ backgroundColor: item.color }}
+                          title={item.color}
+                        />
+                      </div>
+                    </Link>
                   </div>
 
                   {/* Size */}
@@ -209,7 +236,11 @@ function UserCartPage() {
                         onClick={() =>
                           handleUpdateQuantity(item.id, item.quantity + 1)
                         }
-                        disabled={isUpdating}
+                        disabled={
+                          isUpdating ||
+                          (typeof (item as any).stock === "number" &&
+                            item.quantity >= (item as any).stock)
+                        }
                         className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         +

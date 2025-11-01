@@ -20,9 +20,19 @@ import { PayPalButtons } from "@paypal/react-paypal-js";
 import { RazorpayButton } from "@/components/ui/razorpay-button";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AddressFormMinimal,
+  type AddressFormData,
+} from "@/components/user/account/AddressFormMinimal";
 
 function CheckoutContent() {
-  const { addresses, fetchAddresses } = useAddressStore();
+  const { addresses, fetchAddresses, createAddress } = useAddressStore();
   const [selectedAddress, setSelectedAddress] = useState("");
   const [showPaymentFlow, setShowPaymentFlow] = useState(false);
   const [checkoutEmail, setCheckoutEmail] = useState("");
@@ -38,6 +48,17 @@ function CheckoutContent() {
   const [selectedCourier, setSelectedCourier] = useState<any>(null);
   const [isLoadingDelivery, setIsLoadingDelivery] = useState(false);
   const [deliveryError, setDeliveryError] = useState<string | null>(null);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [addressFormData, setAddressFormData] = useState<AddressFormData>({
+    name: "",
+    address: "",
+    city: "",
+    country: "India",
+    state: "",
+    postalCode: "",
+    phone: "",
+    isDefault: false,
+  });
   const { items, fetchCart, clearCart } = useCartStore();
   const { getProductById } = useProductStore();
   const { fetchCoupons, couponList } = useCouponStore();
@@ -59,6 +80,13 @@ function CheckoutContent() {
     fetchAddresses();
     fetchCart();
   }, [fetchAddresses, fetchCart, fetchCoupons]);
+
+  // Auto-populate user email
+  useEffect(() => {
+    if (user?.email) {
+      setCheckoutEmail(user.email);
+    }
+  }, [user]);
 
   useEffect(() => {
     const findDefaultAddress = addresses.find((address) => address.isDefault);
@@ -184,6 +212,26 @@ function CheckoutContent() {
   }
 
   const handlePrePaymentFlow = async () => {
+    // Validate user email
+    if (!checkoutEmail || !user?.email) {
+      toast({
+        title: "User email not found",
+        description: "Please make sure you're logged in",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate address selection
+    if (!selectedAddress) {
+      toast({
+        title: "Please select a delivery address",
+        description: "You need to select or add an address to proceed",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const result = await paymentAction(checkoutEmail);
     if (!result.success) {
       toast({
@@ -264,6 +312,46 @@ function CheckoutContent() {
   const total =
     subTotal + cgstAmount + sgstAmount - discountAmount + deliveryCharges;
 
+  const handleAddressFormChange = (
+    field: keyof AddressFormData,
+    value: string | boolean
+  ) => {
+    setAddressFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleAddressSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const result = await createAddress(addressFormData);
+      if (result) {
+        toast({
+          title: "Address created successfully",
+        });
+        fetchAddresses();
+        setShowAddressModal(false);
+        setAddressFormData({
+          name: "",
+          address: "",
+          city: "",
+          country: "India",
+          state: "",
+          postalCode: "",
+          phone: "",
+          isDefault: false,
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Failed to create address",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isPaymentProcessing) {
     return (
       <Skeleton className="w-full h-[600px] rounded-xl">
@@ -286,53 +374,69 @@ function CheckoutContent() {
             SHIPPING
           </h2>
           <div className="space-y-4">
-            {addresses.map((address) => (
-              <label
-                key={address.id}
-                className="flex items-start p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
-                style={{
-                  borderColor:
-                    selectedAddress === address.id ? "#581c87" : "#d1d5db",
-                  backgroundColor:
-                    selectedAddress === address.id ? "#faf5ff" : "white",
-                }}
-              >
-                <Checkbox
-                  id={address.id}
-                  checked={selectedAddress === address.id}
-                  onCheckedChange={() => setSelectedAddress(address.id)}
-                  className="mt-1"
-                />
-                <div className="flex-grow ml-3 sm:ml-4">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="font-semibold text-sm sm:text-base">
-                      {address.name}
-                    </span>
-                    {address.isDefault && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                        Default
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-700 mb-1">
-                    {address.address}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-600">
-                    {address.city}, {address.country}, {address.postalCode}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-600 mt-1">
-                    Phone: {address.phone}
-                  </div>
-                </div>
-              </label>
-            ))}
-            <Button
-              onClick={() => router.push("/account")}
-              variant="outline"
-              className="w-full py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wide"
-            >
-              + Add a New Address
-            </Button>
+            {addresses.length === 0 ? (
+              <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
+                <p className="text-gray-600 mb-4 text-sm sm:text-base">
+                  You don't have any saved addresses.
+                </p>
+                <Button
+                  onClick={() => setShowAddressModal(true)}
+                  className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-semibold text-sm uppercase tracking-wide"
+                >
+                  + Add Address
+                </Button>
+              </div>
+            ) : (
+              <>
+                {addresses.map((address) => (
+                  <label
+                    key={address.id}
+                    className="flex items-start p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-purple-300"
+                    style={{
+                      borderColor:
+                        selectedAddress === address.id ? "#581c87" : "#d1d5db",
+                      backgroundColor:
+                        selectedAddress === address.id ? "#faf5ff" : "white",
+                    }}
+                  >
+                    <Checkbox
+                      id={address.id}
+                      checked={selectedAddress === address.id}
+                      onCheckedChange={() => setSelectedAddress(address.id)}
+                      className="mt-1"
+                    />
+                    <div className="flex-grow ml-3 sm:ml-4">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span className="font-semibold text-sm sm:text-base">
+                          {address.name}
+                        </span>
+                        {address.isDefault && (
+                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs sm:text-sm text-gray-700 mb-1">
+                        {address.address}
+                      </div>
+                      <div className="text-xs sm:text-sm text-gray-600">
+                        {address.city}, {address.country}, {address.postalCode}
+                      </div>
+                      <div className="text-xs sm:text-sm text-gray-600 mt-1">
+                        Phone: {address.phone}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+                <Button
+                  onClick={() => setShowAddressModal(true)}
+                  variant="outline"
+                  className="w-full py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wide"
+                >
+                  + Add a New Address
+                </Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -418,29 +522,38 @@ function CheckoutContent() {
           </div>
         ) : (
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 uppercase ">
-              GET STARTED
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6 uppercase tracking-wide">
+              PAYMENT
             </h2>
-            <p className="mb-3 sm:mb-4 text-sm sm:text-base text-gray-600">
-              Enter your email to proceed with the purchase
+            <p className="mb-4 sm:mb-6 text-sm sm:text-base text-gray-600">
+              Review your order and proceed to payment
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base"
-                value={checkoutEmail}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setCheckoutEmail(event.target.value)
-                }
-              />
-              <Button
-                onClick={handlePrePaymentFlow}
-                className="px-6 sm:px-8 py-2 sm:py-3 bg-primary hover:bg-secondary-foreground text-white font-semibold text-sm sm:text-base uppercase tracking-wide w-full sm:w-auto"
-              >
-                Proceed
-              </Button>
+
+            {/* Show user email (read-only) */}
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <Label className="text-xs text-gray-500 uppercase tracking-wide mb-1 block">
+                Email Address
+              </Label>
+              <p className="text-sm sm:text-base font-medium text-gray-900">
+                {checkoutEmail || user?.email || "Not available"}
+              </p>
             </div>
+
+            <Button
+              onClick={handlePrePaymentFlow}
+              disabled={!selectedAddress || cartItemsWithDetails.length === 0}
+              className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-primary hover:bg-primary/90 text-white font-semibold text-sm sm:text-base uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {!selectedAddress
+                ? "Select Address to Continue"
+                : "Proceed to Payment"}
+            </Button>
+
+            {!selectedAddress && (
+              <p className="mt-2 text-xs sm:text-sm text-center text-red-600">
+                Please select a delivery address above
+              </p>
+            )}
           </div>
         )}
       </div>
@@ -590,6 +703,19 @@ function CheckoutContent() {
           <span className="uppercase tracking-wide">PAYMENT SECURITY SSL</span>
         </div>
       </div>
+
+      {/* Address Creation Modal */}
+      <Dialog open={showAddressModal} onOpenChange={setShowAddressModal}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <AddressFormMinimal
+            formData={addressFormData}
+            isEditing={false}
+            onSubmit={handleAddressSubmit}
+            onCancel={() => setShowAddressModal(false)}
+            onChange={handleAddressFormChange}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
