@@ -141,7 +141,7 @@ const ContactForm = () => {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="John Doe"
+                placeholder="Enter your name"
                 className={`h-12 ${
                   errors.name ? "border-red-500 focus-visible:ring-red-500" : ""
                 }`}
@@ -166,7 +166,7 @@ const ContactForm = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="john@example.com"
+                placeholder="Enter your email"
                 className={`h-12 ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-500"

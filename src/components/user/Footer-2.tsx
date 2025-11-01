@@ -13,8 +13,7 @@ const footerMenus = [
       { label: "Order Tracking", href: "/account" },
       { label: "FAQs", href: "/contact-us" },
       { label: "Contact Us", href: "/contact-us" },
-      { label: "About Us", href: "/about" },
-      { label: "Help Center", href: "/about" },
+      { label: "About Us", href: "/contact-us" },
     ],
   },
   {
@@ -30,8 +29,7 @@ const footerMenus = [
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms-and-conditions" },
-      { label: "Return Policy", href: "#" },
-      { label: "Shipping Policy", href: "#" },
+      { label: "Cancellation Policy", href: "/cancellation-refund" },
     ],
   },
 ];
@@ -160,7 +158,7 @@ export default function Footer2() {
           {/* Bottom Links */}
           <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 md:pt-8 border-t border-gray-300">
             <p className="text-gray-600 text-xs sm:text-sm">
-              © 2024 {storeSettings?.name || "Saree Ghar"}
+              © {new Date().getFullYear()} {storeSettings?.name || "Saree Ghar"}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
               <Link
@@ -170,7 +168,7 @@ export default function Footer2() {
                 Privacy Policy
               </Link>
               <Link
-                href="#"
+                href="/cancellation-refund"
                 className="text-gray-600 hover:text-black transition-colors"
               >
                 Refund Policy
