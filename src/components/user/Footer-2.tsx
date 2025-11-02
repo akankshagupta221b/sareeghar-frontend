@@ -29,7 +29,9 @@ const footerMenus = [
     links: [
       { label: "Privacy Policy", href: "/privacy-policy" },
       { label: "Terms & Conditions", href: "/terms-and-conditions" },
-      { label: "Cancellation Policy", href: "/cancellation-refund" },
+      { label: "Cancellation and Refund Policy", href: "/cancellation-refund" },
+      { label: "Return & Exchange", href: "/return-exchange-policy" },
+      { label: "Shipping Policy", href: "/shipping-policy" },
     ],
   },
 ];
