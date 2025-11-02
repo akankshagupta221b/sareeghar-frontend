@@ -11,7 +11,7 @@ const returnExchangePolicyData: PolicySection[] = [
     id: "policy-overview",
     title: "NO RETURN & NO EXCHANGE POLICY",
     content: [
-      "At Saree Ghar, every outfit is crafted with utmost care and attention to detail. As part of our commitment to maintaining high standards of quality and hygiene, we follow a strict \"No Return & No Exchange\" policy on all our products.",
+      'At Saree Ghar, every outfit is crafted with utmost care and attention to detail. As part of our commitment to maintaining high standards of quality and hygiene, we follow a strict "No Return & No Exchange" policy on all our products.',
     ],
   },
   {
@@ -67,8 +67,9 @@ export default function ReturnExchangePolicyContent() {
             Last updated: November 2, 2025
           </p>
           <p className="text-secondary-foreground/80 text-base max-w-3xl mx-auto">
-            Please read our return and exchange policy carefully to understand 
-            our commitment to quality and the terms that apply to all Saree Ghar purchases
+            Please read our return and exchange policy carefully to understand
+            our commitment to quality and the terms that apply to all Saree Ghar
+            purchases
           </p>
         </div>
       </div>
@@ -111,12 +112,15 @@ export default function ReturnExchangePolicyContent() {
               Important Notice
             </h3>
             <p className="text-red-800 mb-4 max-w-2xl mx-auto">
-              By placing an order with Saree Ghar, you acknowledge that you have 
+              By placing an order with Saree Ghar, you acknowledge that you have
               read, understood, and agree to our No Return & No Exchange Policy.
             </p>
             <div className="text-sm text-red-700">
-              <p className="mb-2">For defective products, contact us within <strong>24 hours</strong> of delivery:</p>
-              <a 
+              <p className="mb-2">
+                For defective products, contact us within{" "}
+                <strong>24 hours</strong> of delivery:
+              </p>
+              <a
                 href="mailto:sareeghar1969@gmail.com"
                 className="font-semibold text-red-900 hover:underline"
               >
@@ -130,8 +134,8 @@ export default function ReturnExchangePolicyContent() {
               Questions About Our Return Policy?
             </h3>
             <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
-              If you have any questions about our return and exchange policy or 
-              need to report a defective product, please contact our customer 
+              If you have any questions about our return and exchange policy or
+              need to report a defective product, please contact our customer
               support team immediately.
             </p>
             <a

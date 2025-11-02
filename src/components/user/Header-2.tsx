@@ -3,27 +3,19 @@
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { useCategoryStore, Category } from "@/store/useCategoryStore";
-import {
-  Search,
-  Heart,
-  User,
-  ShoppingCart,
-  ChevronDown,
-  Menu,
-  X,
-} from "lucide-react";
+import { Search, User, ShoppingCart, ChevronDown, Menu, X } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetOverlay,
   SheetPortal,
-  SheetClose,
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import SearchModal from "@/components/search/SearchModal";
 import { Instagram, Facebook, Youtube } from "lucide-react";
+import Link from "next/link";
 
 // Dropdown options configuration
 const dropdownOptions = [
@@ -80,27 +72,21 @@ export default function Header2() {
   useEffect(() => {
     if (categories.length === 0) return;
 
-    // Helper function to build category tree
     const buildCategoryTree = (): MegaMenuItem[] => {
-      // Get root categories (parentId is null or doesn't exist)
       const rootCategories = categories.filter(
         (cat) => !cat.parentId && cat.isActive
       );
 
       return rootCategories.map((root) => {
-        // Get second-level categories (children of root)
         const secondLevel = categories.filter(
           (cat) => cat.parentId === root.id && cat.isActive
         );
 
         const subCategories = secondLevel.map((secondCat) => {
-          // Get third-level categories (children of second level)
           const thirdLevel = categories.filter(
             (cat) => cat.parentId === secondCat.id && cat.isActive
           );
 
-          // If there are third-level categories, show them under the second-level title
-          // If not, just show the second-level category as a direct link without nesting
           if (thirdLevel.length > 0) {
             return {
               id: secondCat.id,
@@ -114,7 +100,6 @@ export default function Header2() {
               })),
             };
           } else {
-            // No third level, so return the second-level category directly without a title
             return {
               id: secondCat.id,
               title: "", // Empty title so we can render it differently
@@ -204,13 +189,15 @@ export default function Header2() {
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center w-full max-w-7xl mx-auto">
           {/* Left - Logo */}
-          <div className="flex items-center flex-shrink-0">
-            <img
-              src="/logo/saree-ghar.jpg"
-              alt="Saree Ghar Logo"
-              className="w-24 h-32 object-contain"
-            />
-          </div>
+          <Link href="/">
+            <div className="flex items-center flex-shrink-0">
+              <img
+                src="/logo/saree-ghar.jpg"
+                alt="Saree Ghar Logo"
+                className="w-24 h-32 object-contain"
+              />
+            </div>
+          </Link>
 
           {/* Center - Brand Name & Navigation */}
           <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8">
