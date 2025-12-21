@@ -278,17 +278,16 @@ function ProductDetailsContent({ id }: { id: string }) {
                   Availability:
                 </span>
                 <span
-                  className={`text-xs sm:text-sm font-semibold ${
-                    product.stock > 0
+                  className={`text-xs sm:text-sm font-semibold ${product.stock > 0
                       ? product.stock <= 5
                         ? "text-orange-600"
                         : "text-green-600"
                       : "text-red-600"
-                  }`}
+                    }`}
                 >
                   {product.stock > 0
                     ? product.stock <= 5
-                      ? `Only ${product.stock} left in stock`
+                      ? `${product.stock} available`
                       : `${product.stock} in stock`
                     : "Out of stock"}
                 </span>

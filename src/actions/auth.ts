@@ -237,3 +237,110 @@ export const forgotPasswordResendOtp = async (email: string) => {
     };
   }
 };
+
+// Phone Login Actions
+export const phoneLoginRequest = async (phoneNumber: string) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/phone-login/request`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to send OTP",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "OTP sent to your WhatsApp",
+    };
+  } catch (error) {
+    console.error("Phone login request error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};
+
+export const phoneLoginVerify = async (phoneNumber: string, otp: string) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/phone-login/verify`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber, otp }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Invalid OTP",
+      };
+    }
+
+    return {
+      success: true,
+      data: data.data,
+      message: data.message || "Login successful",
+    };
+  } catch (error) {
+    console.error("Phone login verify error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};
+
+export const phoneLoginResendOtp = async (phoneNumber: string) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/phone-login/resend-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message: data.message || "Failed to resend OTP",
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || "OTP resent to your WhatsApp",
+    };
+  } catch (error) {
+    console.error("Phone login resend OTP error:", error);
+    return {
+      success: false,
+      message: "Network error. Please try again.",
+    };
+  }
+};

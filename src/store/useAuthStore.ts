@@ -27,6 +27,14 @@ type AuthStore = {
     success: boolean;
     data?: { accessToken: string; refreshToken: string; user: User };
   }>;
+  phoneLogin: (
+    phoneNumber: string,
+    otp: string
+  ) => Promise<{
+    success: boolean;
+    data?: { accessToken: string; refreshToken: string; user: User };
+    message?: string;
+  }>;
   logout: () => Promise<void>;
   refreshAccessToken: () => Promise<Boolean>;
   checkAuth: () => void;
@@ -105,6 +113,54 @@ export const useAuthStore = create<AuthStore>()(
           });
 
           return { success: false };
+        }
+      },
+      phoneLogin: async (phoneNumber, otp) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await axiosInstance.post(
+            "/api/auth/phone-login/verify",
+            {
+              phoneNumber,
+              otp,
+            }
+          );
+
+          // Check if the response indicates failure
+          if (response.data.success === false) {
+            const errorMessage = response.data.error || "Login failed";
+            set({
+              isLoading: false,
+              error: errorMessage,
+            });
+            return { success: false, message: errorMessage };
+          }
+
+          const { accessToken, refreshToken, user } = response.data.data;
+
+          // Store tokens in localStorage
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+
+          set({ isLoading: false, user: user || response.data.user });
+          return {
+            success: true,
+            data: {
+              accessToken,
+              refreshToken,
+              user: user || response.data.user,
+            },
+            message: response.data.message || "Login successful",
+          };
+        } catch (error: any) {
+          const errorMessage =
+            error?.response?.data?.error || "Phone login failed";
+          set({
+            isLoading: false,
+            error: errorMessage,
+          });
+
+          return { success: false, message: errorMessage };
         }
       },
       logout: async () => {
