@@ -1,8 +1,6 @@
 "use client";
 
-import { Calendar, ShoppingCart } from "lucide-react";
-import { HandBag02Icon } from "hugeicons-react";
-import DeliveryInfoPanel from "./DeliveryInfoPanel";
+import { ShoppingCart } from "lucide-react";
 import ProductInfoPanel from "./ProductInfoPanel";
 import { useRouter } from "next/navigation";
 
@@ -41,7 +39,7 @@ export default function ProductActions({
         disabled={isLoading}
         className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 sm:py-4 rounded-lg flex items-center justify-center gap-2 sm:gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
       >
-        <HandBag02Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+        {/* <HandBag02Icon className="w-5 h-5 sm:w-6 sm:h-6" /> */}
         {isLoading
           ? "Adding..."
           : isAddedToCart

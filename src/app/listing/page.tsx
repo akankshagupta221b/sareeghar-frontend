@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import FilterSection from "@/components/listing/FilterSection";
-import ListingBanner from "@/components/listing/ListingBanner";
 import ProductGrid from "@/components/listing/ProductGrid";
 import ProductPagination from "@/components/listing/ProductPagination";
 import SortFilter from "@/components/listing/SortFilter";

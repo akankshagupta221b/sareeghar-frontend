@@ -62,36 +62,34 @@ function HomePage() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             {featuredProducts.map((productItem, index) => (
               <div
                 key={index}
-                className="group relative bg-white overflow-hidden border hover:shadow-2xl transition-all duration-500"
+                className="group relative bg-white overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
               >
                 {/* Product Image */}
                 <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                  <Image
+                  <img
                     src={productItem.images[0]}
                     alt={productItem.name}
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    width={300}
-                    height={400}
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />
 
-                  {/* New Badge */}
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                  {/* Badge */}
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="bg-primary text-white text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-full shadow">
                       NEW
                     </span>
                   </div>
 
-                  {/* Quick View Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                  {/* Quick View Overlay - Desktop Only */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 hidden sm:flex items-center justify-center">
                     <Button
                       onClick={() => {
                         window.location.href = `/listing/${productItem.id}`;
                       }}
-                      className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-base font-semibold rounded-full shadow-xl hover:scale-110 transition-all duration-300 transform translate-y-4 group-hover:translate-y-0"
+                      className="bg-white text-black hover:bg-gray-100 px-6 py-5 text-sm font-semibold rounded-full shadow-lg"
                     >
                       QUICK VIEW
                     </Button>
@@ -99,19 +97,41 @@ function HomePage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-5 bg-white">
-                  <h3 className="text-xl font-medium truncate text-gray-900 mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
+                <div className="p-3 sm:p-4 flex flex-col gap-3">
+                  {/* Product Name */}
+                  <h3 className="text-sm sm:text-base font-medium text-gray-900 line-clamp-2 min-h-[42px] group-hover:text-primary transition-colors">
                     {productItem.name}
                   </h3>
-                  <div className="flex items-center justify-between">
-                    <p className="text-lg font-bold text-gray-900">
-                      ₹{productItem.price}
-                    </p>
+
+                  {/* Price Section */}
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                      <p className="line-through text-gray-400 text-xs sm:text-sm">
+                        ₹{productItem.mrp}
+                      </p>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-base sm:text-lg font-semibold text-gray-900">
+                          ₹{productItem.price}
+                        </p>
+
+                        <p className="text-xs sm:text-sm font-medium text-green-600">
+                          {Math.round(
+                            ((productItem.mrp - productItem.price) /
+                              productItem.mrp) *
+                              100,
+                          )}
+                          % OFF
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Arrow Button */}
                     <button
                       onClick={() => {
                         window.location.href = `/listing/${productItem.id}`;
                       }}
-                      className="text-primary hover:text-primary/80 transition-colors duration-300"
+                      className="shrink-0 p-2 rounded-full border border-gray-200 text-primary hover:bg-primary hover:text-white transition-all duration-300"
                       aria-label="View product"
                     >
                       <svg
@@ -120,7 +140,7 @@ function HomePage() {
                         viewBox="0 0 24 24"
                         strokeWidth={2}
                         stroke="currentColor"
-                        className="w-6 h-6"
+                        className="w-4 h-4 sm:w-5 sm:h-5"
                       >
                         <path
                           strokeLinecap="round"

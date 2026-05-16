@@ -147,6 +147,7 @@ export default function Footer2() {
                   <Link
                     key={index}
                     href={social.href || "#"}
+                    target="_blank"
                     className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"
                     aria-label={social.label}
                   >

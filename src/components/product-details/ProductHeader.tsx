@@ -42,18 +42,18 @@ export default function ProductHeader({
         </h1>
 
         <div className="text-xl sm:text-2xl md:text-3xl font-medium flex items-center space-x-2">
-          <span>₹{sellingPrice.toFixed(2)}</span>
-
           {mrp > sellingPrice && (
             <>
               <span className="text-base sm:text-lg text-gray-500 line-through font-normal">
                 ₹{mrp.toFixed(2)}
               </span>
-              <span className="text-sm sm:text-base text-green-600 font-semibold">
-                ({discount}% OFF)
-              </span>
             </>
           )}
+          <span>₹{sellingPrice.toFixed(2)}</span>
+
+          <span className="text-sm sm:text-base text-green-600 font-semibold">
+            ({discount}% OFF)
+          </span>
         </div>
       </div>
 
