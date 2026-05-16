@@ -66,12 +66,10 @@ export const HomePageBanner = ({ banners }: { banners: Banner[] }) => {
           >
             {/* Background Image with Parallax Effect */}
             <div className="absolute inset-0">
-              <Image
+              <img
                 src={bannerItem.imageUrl}
                 alt={`Banner ${index + 1}`}
-                className="w-full h-full object-cover object-center"
-                layout="fill"
-                objectFit="cover"
+                className="w-full h-full object-center object-cover"
               />
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
@@ -107,23 +105,6 @@ export const HomePageBanner = ({ banners }: { banners: Banner[] }) => {
                   {bannerItem.description ||
                     "Discover our exclusive collection of premium sarees, crafted with elegance and tradition for every special moment."}
                 </p>
-
-                {/* CTA Buttons */}
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <Button
-                    onClick={() => (window.location.href = "/listing")}
-                    className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-base md:text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
-                  >
-                    SHOP NOW
-                  </Button>
-                  <Button
-                    onClick={() => (window.location.href = `/listing`)}
-                    variant="outline"
-                    className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-base md:text-lg font-semibold rounded-full backdrop-blur-sm bg-white/10 transition-all duration-300 hover:scale-105"
-                  >
-                    EXPLORE COLLECTION
-                  </Button>
-                </div>
               </div>
             </div>
 

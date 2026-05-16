@@ -40,13 +40,26 @@ function HomePage() {
       <HomePageBanner banners={banners} />
 
       {/* Feature products section */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
+      <section className="py-8 bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
         {/* Decorative Background */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 ">
           {/* Section Header */}
+
+          <div>
+            <div className="flex flex-wrap justify-center mb-6">
+              <Button
+                onClick={() => (window.location.href = `/listing`)}
+                variant="outline"
+                className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-6 text-base md:text-lg font-semibold rounded-full backdrop-blur-sm bg-white/10 transition-all duration-300 hover:scale-105"
+              >
+                EXPLORE COLLECTION
+              </Button>
+            </div>
+          </div>
+
           <div className="text-center mb-16">
             <div className="inline-block mb-4">
               <span className="text-xs md:text-sm uppercase tracking-[0.3em] font-semibold text-primary">
